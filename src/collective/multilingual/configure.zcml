@@ -1,0 +1,61 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    i18n_domain="collective.multilingual">
+
+  <include package="plone.app.registry" />
+  <include package=".browser" />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Multilingual"
+      directory="profile"
+      description="Registers control panel and default settings."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <plone:behavior
+      title="Multilingual"
+      description="Enables support for content in multiple languages."
+      provides=".interfaces.IMultilingual"
+      marker=".interfaces.IMultilingual"
+      for="plone.dexterity.interfaces.IDexterityContent"
+      />
+
+  <!-- Vocabularies -->
+
+  <utility
+      name="collective.multilingual.vocabularies.Translations"
+      factory=".vocabularies.Translations"
+      />
+
+  <utility
+      name="collective.multilingual.vocabularies.ContainerFTIs"
+      factory=".vocabularies.ContainerFTIs"
+      />
+
+  <!-- Adapters -->
+
+  <adapter factory=".graph.MultilingualTranslationGraph" />
+
+  <!-- Events -->
+
+  <subscriber
+      for=".interfaces.IMultilingual
+           OFS.interfaces.IObjectWillBeAddedEvent"
+      handler=".events.objectAddedEvent"
+      />
+
+  <subscriber
+      for=".interfaces.IMultilingual
+           OFS.interfaces.IObjectWillBeRemovedEvent"
+      handler=".events.objectRemovedEvent"
+      />
+
+</configure>

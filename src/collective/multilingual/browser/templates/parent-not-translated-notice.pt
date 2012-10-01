@@ -1,0 +1,15 @@
+<dl class="portalMessage info">
+  <dt i18n:translate="">
+    Info
+  </dt>
+  <dd id="multilingual-parent-not-translated-notice"
+      tal:define="folder nocall: view/folder" i18n:translate="">
+    You have selected translation into <span i18n:name="language"
+    tal:content="view/language" />. This is a notice to inform you
+    that the <em>parent</em> folder of the content that have selected
+    for translation has not been translated. Please visit the folder
+    <a href="" i18n:name="link" tal:attributes="href
+    folder/absolute_url" tal:content="folder/Title" /> to review this
+    before proceeding.
+  </dd>
+</dl>
