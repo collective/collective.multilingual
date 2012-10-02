@@ -45,6 +45,9 @@ There are some features that are missing at this point:
 
 - Integration with Plone's search user interface and collections.
 
+- When you create content in a container that has a language setting,
+  the content should inherit that setting.
+
 
 Understanding language folders
 ------------------------------
