@@ -21,31 +21,6 @@ The translate menu shows an entry for each supported language and
 either links to an add- or edit form.
 
 
-What's in the box?
-------------------
-
-Currently, what you get is a translation relationship between content
-items and a translation workflow based on the new "translate" action
-menu:
-
-- You can set up a language folder.
-
-- You can translate content into a supported language.
-
-- You can visit the editing pages for different languages in the
-  translation graph using the action menu.
-
-- You can see a statistics table that lists the number of content
-  items in each of the supported languages.
-
-There are some features that are missing at this point:
-
-- The ability to see which translations are available for the current
-  document (as an anonymous or unprivileged user).
-
-- Integration with Plone's search user interface and collections.
-
-
 Understanding language folders
 ------------------------------
 
@@ -60,22 +35,21 @@ Language in translation is created under ``/<language-id>``:
     /de/titelseite
     /fr/premiere-page
 
-  The top-level language folders are created on request, when an
-  action to translate an item into a new language is first selected.
+If an action is selected to select content into a language for which a
+language folder has not yet been created, the user is first prompted
+to create one.
 
-Relationships
--------------
 
-The translations data structure is a `directed acyclic graph
-<http://en.wikipedia.org/wiki/Directed_acyclic_graph>`_. In other
-words, only the direct translation relationship is recorded. For
-example, original content in English might first be translated into
-German, and then from this translation, into French.
+The translation graph
+---------------------
 
-The system records these translation relationships separately, and
-this information can be used to support an advanced workflow where
-some languages depend on the translation into another non-default
-language.
+The data structure that records the translation relationship between
+content is a `directed acyclic graph
+<http://en.wikipedia.org/wiki/Directed_acyclic_graph>`_ where every
+vertice is a content item, and edges are a translation from one
+language to another. For example, original content in English might
+first be translated into German, and then from this translation, into
+French. This would be a graph with three vertices and two edges.
 
 
 API
@@ -98,6 +72,16 @@ language.
 >>> languages = dict(translations)
 >>> item = language['de']
 
+
+To-Do
+-----
+
+There are some features that are missing at this point:
+
+- The ability to see which translations are available for the current
+  document (as an anonymous or unprivileged user).
+
+- Integration with Plone's search user interface and collections.
 
 
 History
