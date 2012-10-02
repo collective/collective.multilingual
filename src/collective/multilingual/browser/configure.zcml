@@ -93,4 +93,8 @@
       name="label"
       />
 
+  <!-- Resources -->
+
+  <browser:resource name="multilingual-icon.png" image="resources/icon.png" />
+
 </configure>
