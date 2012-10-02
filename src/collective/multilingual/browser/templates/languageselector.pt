@@ -1,7 +1,7 @@
 <tal:language tal:condition="view/available">
 <ul id="portal-languageselector"
     tal:define="showFlags view/showFlags;
-                languages view/languages;
+                languages view/getLanguageActions;
                 here_url context/absolute_url;
                 portal_url view/portal_url;">
     <tal:language repeat="lang languages">
@@ -13,8 +13,9 @@
         <a href=""
            tal:define="flag lang/flag|nothing;
                        name lang/native|lang/name;
-                       showflag python:showFlags and flag;"
-           tal:attributes="href string:${here_url}/switchLanguage?set_language=${code};
+                       showflag python:showFlags and flag;
+                       url lang/url|here_url"
+           tal:attributes="href string:${url}/switchLanguage?set_language=${code};
                            title name"
             ><tal:flag condition="showflag">
                 <img width="14"

@@ -78,9 +78,6 @@ To-Do
 
 There are some features that are missing at this point:
 
-- The ability to see which translations are available for the current
-  document (as an anonymous or unprivileged user).
-
 - Integration with Plone's search user interface and collections.
 
 
