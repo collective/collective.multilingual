@@ -54,17 +54,30 @@ class ITranslationGraph(Interface):
         to determine the root item which is the canonical content.
         """
 
+    def getNearestTranslations(self):
+        """Return nearest translations for all supported languages.
+
+        For each language, a tuple ``(lang_id, item, contained)`` is
+        returned, where ``item`` is the nearest item translated into
+        the specified language in the parent chain of the canonical
+        content item, and ``contained`` is true if the item is
+        contained in the current translation graph.
+
+        Note that the context is omitted from the result.
+        """
+
     def getParent():
         """Return the parent translation.
 
         This is the object which has a direct translation relationship
-        to the context.
+        to the context. If no such object exists, no return value is
+        provided.
         """
 
     def getTranslations():
         """Return all content items in translation graph.
 
-        Note that the current context is omitted from the result.
+        Note that the context is omitted from the result.
         """
 
     def registerTranslation(parent):
