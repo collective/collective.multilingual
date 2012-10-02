@@ -44,6 +44,8 @@
 
   <adapter factory=".graph.MultilingualTranslationGraph" />
 
+  <adapter factory=".catalog.translations" name="translations" />
+
   <!-- Events -->
 
   <subscriber
