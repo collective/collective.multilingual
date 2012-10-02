@@ -83,8 +83,8 @@ class Fixture(PloneSandboxLayer):
         from collective.multilingual.interfaces import IMultilingual
 
         content_types = [
-            ("Item", "plone.dexterity.content.Item", ()),
-            ("Container", "plone.dexterity.content.Container", ("Item", )),
+            ("Item", "Item", ()),
+            ("Container", "Container", ("Item", )),
             ]
 
         # Set up Dexterity-based content types.
@@ -95,7 +95,7 @@ class Fixture(PloneSandboxLayer):
                 dotted_name(IMultilingual),
                 dotted_name(INameFromTitle),
                 )
-            fti.klass = klass
+            fti.klass = "plone.dexterity.content." + klass
             register(fti)
 
             # There's got to be a better way :-)
