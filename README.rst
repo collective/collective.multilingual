@@ -35,13 +35,13 @@ menu:
 - You can visit the editing pages for different languages in the
   translation graph using the action menu.
 
+- You can see a statistics table that lists the number of content
+  items in each of the supported languages.
+
 There are some features that are missing at this point:
 
 - The ability to see which translations are available for the current
   document (as an anonymous or unprivileged user).
-
-- The ability to get an overview of the total number of translations
-  in all of the supported languages.
 
 - Integration with Plone's search user interface and collections.
 

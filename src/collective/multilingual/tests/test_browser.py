@@ -67,6 +67,24 @@ class TestUtility(unittest.TestCase):
         page = self.layer['portal']['da']['forside']
         browser.open(page.absolute_url())
 
+    def test_settings(self):
+        browser = self.get_browser()
+        page = self.layer['portal']
+        browser.open(page.absolute_url() + "/@@multilingual-settings")
+
+        import lxml.html
+        root = lxml.html.fromstring(browser.contents)
+        table = root.get_element_by_id('multilingual-statistics')
+        tds = [td.text_content().strip() for td in table.iterdescendants('td')]
+        self.assertEqual(
+            tds,
+            ['Any', '7', '100%',
+             'Danish', '3', '43%',
+             'English', '0', '0%',
+             'German', '1', '14%',
+             'Spanish', '0', '0%']
+            )
+
     def test_setup_language(self):
         browser = self.get_browser()
         page = self.layer['portal']

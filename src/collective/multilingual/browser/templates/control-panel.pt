@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xml:lang="en" lang="en"
+      tal:omit-tag=""
+      metal:extend-macro="context/@@ploneform-macros/titlelessform"
+      i18n:domain="collective.multilingual">
+
+  <body>
+    <div metal:fill-slot="formtop">
+      <p i18n:translate="">
+        The site default language is
+        <span i18n:name="lang_name" tal:replace="view/getDefaultLanguage" />.
+        However, in the table below, the statistics for this language do
+        not include content for which a language has not been explicitly set.
+      </p>
+      <table id="multilingual-statistics" class="listing">
+        <thead>
+          <tr>
+            <th i18n:translate="">Language</th>
+            <th i18n:translate=""># of Items</th>
+            <th i18n:translate="">Ratio</th>
+          </tr>
+        </thead>
+        <tbody tal:define="stats view/getLanguageStats">
+          <tr tal:repeat="stat stats">
+            <td>
+              <em tal:omit-tag="not: repeat/stat/start"
+                  i18n:translate=""
+                  tal:content="stat/language" />
+            </td>
+            <td tal:content="stat/count" />
+            <td tal:content="stat/ratio" />
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
