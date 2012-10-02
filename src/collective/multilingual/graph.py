@@ -97,7 +97,7 @@ class MultilingualTranslationGraph(object):
 
         # 2. Look for parent folder translations.
         folder = self.context
-        while not IPloneSiteRoot.providedBy(folder):
+        while langs and not IPloneSiteRoot.providedBy(folder):
             folder = folder.__parent__
             if IMultilingual.providedBy(folder):
                 translations = ITranslationGraph(folder).getTranslations()
@@ -107,7 +107,7 @@ class MultilingualTranslationGraph(object):
                     except KeyError:
                         continue
 
-                    lang_items.append((lang_id, folder, False))
+                    lang_items.append((lang_id, item, False))
 
         # 3. Process remaining supported languages.
         for lang_id in langs:
@@ -165,8 +165,8 @@ class MultilingualTranslationGraph(object):
     def removeTranslation(self):
         result = self.catalog(translations=self.uuid)
         if len(result) != 1:
-            raise ValueError("Translation parent not found.")
+            return
 
         obj = result[0].getObject()
-        obj.translations = obj.translations - set(self.uuids)
+        obj.translations = obj.translations - set(self.uuid)
         return obj
