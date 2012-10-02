@@ -1,7 +1,6 @@
 from plone.uuid.interfaces import IUUID
 from zope.interface import implements
 from zope.component import adapts
-from zope.lifecycleevent import modified
 
 from Products.CMFCore.utils import getToolByName
 from Acquisition import aq_base
@@ -117,7 +116,6 @@ class MultilingualTranslationGraph(object):
         translations = set(getattr(aq_base(parent), "translations", ()))
         translations.add(self.uuid)
         parent.translations = translations
-        modified(parent)
 
     def removeTranslation(self):
         result = self.catalog(translations=self.uuid)
@@ -126,4 +124,4 @@ class MultilingualTranslationGraph(object):
 
         obj = result[0].getObject()
         obj.translations = obj.translations - set(self.uuids)
-        modified(obj)
+        return obj

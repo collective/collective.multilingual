@@ -47,7 +47,7 @@ class Fixture(PloneSandboxLayer):
         # 3. Create a Danish translation of the front page:
         createContentInContainer(
             danish, "Item", id="forside", title=u"Forside",
-            language=u"da", translations=[str(IUUID(page))],
+            translations=[str(IUUID(page))],
             )
 
         # 4. Create a folder in neutral language and a translation in

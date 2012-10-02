@@ -1,5 +1,7 @@
+from zope.lifecycleevent import modified
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Acquisition import aq_base
 
 from .interfaces import ITranslationGraph
@@ -17,6 +19,13 @@ def objectAddedEvent(context, event):
     """
 
     container = event.newParent
+
+    if not IPloneSiteRoot.providedBy(container):
+        language = aq_base(container).language
+        if not context.language:
+            context.language = language
+            modified(context)
+
     catalog = getToolByName(container, 'portal_catalog')
 
     translations = getattr(aq_base(context), "translations", None)
@@ -29,6 +38,7 @@ def objectAddedEvent(context, event):
         return
 
     del context.translations
+    modified(context)
 
     parent = result[0].getObject()
     if parent.creation_date >= context.creation_date:
@@ -40,9 +50,11 @@ def objectAddedEvent(context, event):
     # Now, append the translation to the source item's list.
     wrapped = context.__of__(container)
     ITranslationGraph(wrapped).registerTranslation(parent)
+    modified(parent)
 
 
 def objectRemovedEvent(context, event):
     container = event.oldParent
     wrapped = context.__of__(container)
-    ITranslationGraph(wrapped).removeTranslation()
+    obj = ITranslationGraph(wrapped).removeTranslation()
+    modified(obj)
