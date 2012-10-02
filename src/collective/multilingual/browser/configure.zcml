@@ -43,6 +43,15 @@
       permission="cmf.ManagePortal"
       />
 
+  <browser:viewlet
+      name="plone.app.i18n.locales.languageselector"
+      layer="collective.multilingual.interfaces.IBrowserLayer"
+      manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+      class="collective.multilingual.browser.languages.LanguageSelector"
+      template="templates/languageselector.pt"
+      permission="zope2.View"
+      />
+
   <!-- Action menu -->
 
   <browser:menu
