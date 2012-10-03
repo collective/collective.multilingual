@@ -54,6 +54,12 @@ def objectAddedEvent(context, event):
 
 
 def objectModifiedEvent(context, event):
+    """Handle event that content was modified.
+
+    We need to copy language-independent fields to other content items
+    in the translation graph.
+    """
+
     translations = ITranslationGraph(context).getTranslations()
     items = [record[1] for record in translations]
 
@@ -75,6 +81,12 @@ def objectModifiedEvent(context, event):
 
 
 def objectRemovedEvent(context, event):
+    """Handle event that content was removed.
+
+    We need to remove the translation from its translation graph (if
+    applicable).
+    """
+
     container = event.oldParent
     wrapped = context.__of__(container)
     obj = ITranslationGraph(wrapped).removeTranslation()
