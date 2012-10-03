@@ -78,9 +78,6 @@ To-Do
 
 There are some features that are missing at this point:
 
-- On object modified, copy language-independent values to other items
-  in translation graph.
-
 - Integration with Plone's search user interface and collections.
 
 

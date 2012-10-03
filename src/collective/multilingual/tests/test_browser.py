@@ -25,6 +25,29 @@ class TestUtility(unittest.TestCase):
 
         return browser
 
+    def test_edit_language_independent(self):
+        browser = self.get_browser()
+        page = self.layer['portal']['front-page']
+        browser.open(page.absolute_url() + '/edit')
+        form = browser.getForm(id="form")
+
+        from collective.multilingual.interfaces import getLanguageIndependent
+        from zope.i18n import translate
+
+        language_independent = getLanguageIndependent(page)
+
+        for field in language_independent:
+            label = translate(field.title)
+            control = form.getControl(label)
+            control.value = 'foo'
+
+        form.submit('Save')
+
+        for obj in (page, self.layer['portal']['da']['forside']):
+            for field in language_independent:
+                value = getattr(obj, field.__name__)
+                self.assertTrue('foo' in repr(value), value)
+
     def test_page_in_neutral_language(self):
         browser = self.get_browser()
         page = self.layer['portal']['front-page']

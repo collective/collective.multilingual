@@ -1,10 +1,12 @@
 from zope.lifecycleevent import modified
+from zope.schema.interfaces import ValidationError
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Acquisition import aq_base
 
 from .interfaces import ITranslationGraph
+from .interfaces import getLanguageIndependent
 from .utils import logger
 
 
@@ -24,7 +26,6 @@ def objectAddedEvent(context, event):
         language = aq_base(container).language
         if not context.language:
             context.language = language
-            modified(context)
 
     catalog = getToolByName(container, 'portal_catalog')
 
@@ -38,7 +39,6 @@ def objectAddedEvent(context, event):
         return
 
     del context.translations
-    modified(context)
 
     parent = result[0].getObject()
     if parent.creation_date >= context.creation_date:
@@ -51,6 +51,27 @@ def objectAddedEvent(context, event):
     wrapped = context.__of__(container)
     ITranslationGraph(wrapped).registerTranslation(parent)
     modified(parent)
+
+
+def objectModifiedEvent(context, event):
+    translations = ITranslationGraph(context).getTranslations()
+    items = [record[1] for record in translations]
+
+    for field in getLanguageIndependent(context):
+        name = field.__name__
+        adapter = field.interface(context)
+
+        try:
+            value = getattr(adapter, name)
+        except AttributeError:
+            continue
+
+        for item in items:
+            adapter = field.interface(item)
+            try:
+                setattr(adapter, name, value)
+            except ValidationError as exc:
+                logger.warn(exc)
 
 
 def objectRemovedEvent(context, event):

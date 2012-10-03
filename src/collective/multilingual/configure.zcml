@@ -50,6 +50,12 @@
 
   <subscriber
       for=".interfaces.IMultilingual
+           zope.lifecycleevent.IObjectModifiedEvent"
+      handler=".events.objectModifiedEvent"
+      />
+
+  <subscriber
+      for=".interfaces.IMultilingual
            OFS.interfaces.IObjectWillBeAddedEvent"
       handler=".events.objectAddedEvent"
       />

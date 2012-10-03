@@ -79,11 +79,12 @@ class Fixture(PloneSandboxLayer):
         from plone.dexterity.fti import DexterityFTI
         from plone.dexterity.fti import register
         from plone.app.content.interfaces import INameFromTitle
-
+        from plone.app.dexterity.behaviors.metadata import IOwnership
         from collective.multilingual.interfaces import IMultilingual
 
         bs = (
             dotted_name(IMultilingual),
+            dotted_name(IOwnership),
             dotted_name(INameFromTitle),
             )
 

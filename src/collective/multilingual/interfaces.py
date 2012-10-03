@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import itertools
+
 from zope import schema
 from zope.interface import Interface
 from zope.interface import alsoProvides
+from zope.component import getUtility
 
+from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.utils import getAdditionalSchemata
 from plone.app.dexterity.behaviors.metadata import IDublinCore
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.autoform import interfaces as autoform
+from plone.supermodel.utils import mergedTaggedValueList
 
 from z3c.form.interfaces import IAddForm
 
@@ -19,6 +25,24 @@ def setLanguageIndependent(*fields):
             LANGUAGE_INDEPENDENT_KEY, (
                 (autoform.IAutoExtensibleForm, field.__name__, True),
                 ))
+
+
+def getLanguageIndependent(context):
+    portal_type = context.portal_type
+    fti = getUtility(IDexterityFTI, name=portal_type)
+
+    schemata = getAdditionalSchemata(context=context, portal_type=portal_type)
+    schemas = tuple(schemata) + (fti.lookupSchema(), )
+
+    fields = set()
+    for schema in schemas:
+        entries = mergedTaggedValueList(schema, LANGUAGE_INDEPENDENT_KEY)
+        for interface, name, value in entries:
+            field = schema[name]
+            fields.add(field)
+
+    return fields
+
 
 LANGUAGE_INDEPENDENT_KEY = u"plone.autoform.languageindependent"
 
