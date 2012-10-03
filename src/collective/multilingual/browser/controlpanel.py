@@ -64,6 +64,10 @@ class ControlPanelEditForm(controlpanel.RegistryEditForm):
 
         total += len(catalog(language=u""))
 
+        # An edge-case: there is no content :-).
+        if not total:
+            return ()
+
         result = [
             (self.getDisplayLanguage(lang_id), count, "%1.f%%" % (
                 100 * count / float(total)))
