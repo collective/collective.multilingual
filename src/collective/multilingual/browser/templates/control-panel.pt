@@ -4,6 +4,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       xml:lang="en" lang="en"
       tal:omit-tag=""
+      metal:define-macro="main"
       metal:extend-macro="context/@@ploneform-macros/titlelessform"
       i18n:domain="collective.multilingual">
 
