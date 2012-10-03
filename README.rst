@@ -95,12 +95,12 @@ was to take advantage of the component architecture
 Toolkit <http://docs.zope.org/zopetoolkit/>`_ to model an architecture
 that could realistically support the diverse requirements for
 multilingual content. This eventually lead to the development of
-several packages including `plone.multilingual
-<http://pypi.python.org/pypi/plone.multilingual>`_ (which defines the
-core architecture and interfaces).
+several packages including `plone.app.multilingual
+<http://pypi.python.org/pypi/plone.app.multilingual>`_ (also known
+simply as PAM).
 
-Note that ``collective.multilingual`` (this package) aims to fill the
-same space and effectively replace these products.
+Note that ``collective.multilingual`` (this package) is an
+*alternative* to ``plone.multilingual`` and its related packages.
 
 
 Frequently Asked Questions
