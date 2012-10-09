@@ -99,6 +99,8 @@ class TranslateMenu(BrowserMenu):
                 "action": action_url,
                 "selected": False,
                 "icon": icon,
+                "width": 14,
+                "height": 11,
                 "extra": {"id": "translate_into_%s" % lang_id,
                            "separator": None,
                            "class": ""},
