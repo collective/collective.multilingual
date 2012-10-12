@@ -14,6 +14,14 @@
       permission="cmf.ModifyPortalContent"
       />
 
+  <browser:page
+      name="multilingual-settings"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".controlpanel.ControlPanel"
+      layer="..interfaces.IBrowserLayer"
+      permission="cmf.ManagePortal"
+      />
+
   <browser:viewlet
       name="collective.multilingual.supported-languages-notice"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
@@ -33,6 +41,15 @@
       template="templates/parent-not-translated-notice.pt"
       layer="..interfaces.IBrowserLayer"
       permission="cmf.ManagePortal"
+      />
+
+  <browser:viewlet
+      name="plone.app.i18n.locales.languageselector"
+      layer="collective.multilingual.interfaces.IBrowserLayer"
+      manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+      class="collective.multilingual.browser.languages.LanguageSelector"
+      template="templates/languageselector.pt"
+      permission="zope2.View"
       />
 
   <!-- Action menu -->
@@ -92,5 +109,9 @@
       factory=".form.LanguageIndependentWidgetLabel"
       name="label"
       />
+
+  <!-- Resources -->
+
+  <browser:resource name="multilingual-icon.png" image="resources/icon.png" />
 
 </configure>

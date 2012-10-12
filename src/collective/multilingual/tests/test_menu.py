@@ -14,7 +14,7 @@ def extract_langs(titles):
     return set([title.split(' ', 1)[0] for title in titles])
 
 
-class TestUtility(unittest.TestCase):
+class TestMenu(unittest.TestCase):
     layer = INTEGRATION_TESTING
 
     def make_one(self, context):

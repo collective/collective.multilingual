@@ -47,7 +47,7 @@ class Fixture(PloneSandboxLayer):
         # 3. Create a Danish translation of the front page:
         createContentInContainer(
             danish, "Item", id="forside", title=u"Forside",
-            language=u"da", translations=[str(IUUID(page))],
+            translations=[str(IUUID(page))],
             )
 
         # 4. Create a folder in neutral language and a translation in
@@ -79,23 +79,26 @@ class Fixture(PloneSandboxLayer):
         from plone.dexterity.fti import DexterityFTI
         from plone.dexterity.fti import register
         from plone.app.content.interfaces import INameFromTitle
-
+        from plone.app.dexterity.behaviors.metadata import IOwnership
         from collective.multilingual.interfaces import IMultilingual
 
+        bs = (
+            dotted_name(IMultilingual),
+            dotted_name(IOwnership),
+            dotted_name(INameFromTitle),
+            )
+
         content_types = [
-            ("Item", "plone.dexterity.content.Item", ()),
-            ("Container", "plone.dexterity.content.Container", ("Item", )),
+            ("Item", "Item", (), bs),
+            ("Container", "Container", ("Item", ), bs),
             ]
 
         # Set up Dexterity-based content types.
-        for portal_type, klass, allowed_content_types in content_types:
+        for portal_type, klass, allowed_content_types, bs in content_types:
             fti = DexterityFTI(portal_type)
             fti.allowed_content_types = allowed_content_types
-            fti.behaviors = (
-                dotted_name(IMultilingual),
-                dotted_name(INameFromTitle),
-                )
-            fti.klass = klass
+            fti.behaviors = bs
+            fti.klass = "plone.dexterity.content." + klass
             register(fti)
 
             # There's got to be a better way :-)

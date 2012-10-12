@@ -25,6 +25,29 @@ class TestUtility(unittest.TestCase):
 
         return browser
 
+    def test_edit_language_independent(self):
+        browser = self.get_browser()
+        page = self.layer['portal']['front-page']
+        browser.open(page.absolute_url() + '/edit')
+        form = browser.getForm(id="form")
+
+        from collective.multilingual.interfaces import getLanguageIndependent
+        from zope.i18n import translate
+
+        language_independent = getLanguageIndependent(page)
+
+        for field in language_independent:
+            label = translate(field.title)
+            control = form.getControl(label)
+            control.value = 'foo'
+
+        form.submit('Save')
+
+        for obj in (page, self.layer['portal']['da']['forside']):
+            for field in language_independent:
+                value = getattr(obj, field.__name__)
+                self.assertTrue('foo' in repr(value), value)
+
     def test_page_in_neutral_language(self):
         browser = self.get_browser()
         page = self.layer['portal']['front-page']
@@ -66,6 +89,24 @@ class TestUtility(unittest.TestCase):
         browser = self.get_browser()
         page = self.layer['portal']['da']['forside']
         browser.open(page.absolute_url())
+
+    def test_settings(self):
+        browser = self.get_browser()
+        page = self.layer['portal']
+        browser.open(page.absolute_url() + "/@@multilingual-settings")
+
+        import lxml.html
+        root = lxml.html.fromstring(browser.contents)
+        table = root.get_element_by_id('multilingual-statistics')
+        tds = [td.text_content().strip() for td in table.iterdescendants('td')]
+        self.assertEqual(
+            tds,
+            ['Any', '7', '100%',
+             'Danish', '3', '43%',
+             'English', '0', '0%',
+             'German', '1', '14%',
+             'Spanish', '0', '0%']
+            )
 
     def test_setup_language(self):
         browser = self.get_browser()

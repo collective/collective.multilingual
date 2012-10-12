@@ -44,7 +44,15 @@
 
   <adapter factory=".graph.MultilingualTranslationGraph" />
 
+  <adapter factory=".catalog.translations" name="translations" />
+
   <!-- Events -->
+
+  <subscriber
+      for=".interfaces.IMultilingual
+           zope.lifecycleevent.IObjectModifiedEvent"
+      handler=".events.objectModifiedEvent"
+      />
 
   <subscriber
       for=".interfaces.IMultilingual

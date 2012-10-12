@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import itertools
+
 from zope import schema
 from zope.interface import Interface
 from zope.interface import alsoProvides
+from zope.component import getUtility
 
+from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.utils import getAdditionalSchemata
 from plone.app.dexterity.behaviors.metadata import IDublinCore
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.autoform import interfaces as autoform
+from plone.supermodel.utils import mergedTaggedValueList
 
 from z3c.form.interfaces import IAddForm
 
@@ -19,6 +25,24 @@ def setLanguageIndependent(*fields):
             LANGUAGE_INDEPENDENT_KEY, (
                 (autoform.IAutoExtensibleForm, field.__name__, True),
                 ))
+
+
+def getLanguageIndependent(context):
+    portal_type = context.portal_type
+    fti = getUtility(IDexterityFTI, name=portal_type)
+
+    schemata = getAdditionalSchemata(context=context, portal_type=portal_type)
+    schemas = tuple(schemata) + (fti.lookupSchema(), )
+
+    fields = set()
+    for schema in schemas:
+        entries = mergedTaggedValueList(schema, LANGUAGE_INDEPENDENT_KEY)
+        for interface, name, value in entries:
+            field = schema[name]
+            fields.add(field)
+
+    return fields
+
 
 LANGUAGE_INDEPENDENT_KEY = u"plone.autoform.languageindependent"
 
@@ -54,17 +78,30 @@ class ITranslationGraph(Interface):
         to determine the root item which is the canonical content.
         """
 
+    def getNearestTranslations(self):
+        """Return nearest translations for all supported languages.
+
+        For each language, a tuple ``(lang_id, item, contained)`` is
+        returned, where ``item`` is the nearest item translated into
+        the specified language in the parent chain of the canonical
+        content item, and ``contained`` is true if the item is
+        contained in the current translation graph.
+
+        Note that the context is omitted from the result.
+        """
+
     def getParent():
         """Return the parent translation.
 
         This is the object which has a direct translation relationship
-        to the context.
+        to the context. If no such object exists, no return value is
+        provided.
         """
 
     def getTranslations():
         """Return all content items in translation graph.
 
-        Note that the current context is omitted from the result.
+        Note that the context is omitted from the result.
         """
 
     def registerTranslation(parent):

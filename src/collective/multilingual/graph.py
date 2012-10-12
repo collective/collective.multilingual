@@ -1,9 +1,10 @@
 from plone.uuid.interfaces import IUUID
 from zope.interface import implements
 from zope.component import adapts
-from zope.lifecycleevent import modified
+from zope.component import getMultiAdapter
 
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Acquisition import aq_base
 
 from .interfaces import IMultilingual
@@ -71,6 +72,49 @@ class MultilingualTranslationGraph(object):
 
         return result[0].getObject()
 
+    def getNearestTranslations(self):
+        lt = getToolByName(self.context, 'portal_languages')
+        supported = lt.listSupportedLanguages()
+        assert len(supported) > 1
+
+        lang_items = []
+        langs = set(lang[0] for lang in supported)
+        default_lang = lt.getDefaultLanguage()
+
+        # 1. Determine existing translations.
+        for lang_id, item in self.getTranslations():
+            if not lang_id:
+                lang_id = default_lang
+
+            try:
+                langs.remove(lang_id)
+            except KeyError:
+                # Appearently, this language is no longer
+                # supported. Ignore it!
+                continue
+
+            lang_items.append((lang_id, item, True))
+
+        # 2. Look for parent folder translations.
+        folder = self.context
+        while langs and not IPloneSiteRoot.providedBy(folder):
+            folder = folder.__parent__
+            if IMultilingual.providedBy(folder):
+                translations = ITranslationGraph(folder).getTranslations()
+                for lang_id, item in translations:
+                    try:
+                        langs.remove(lang_id)
+                    except KeyError:
+                        continue
+
+                    lang_items.append((lang_id, item, False))
+
+        # 3. Process remaining supported languages.
+        for lang_id in langs:
+            lang_items.append((lang_id, None, False))
+
+        return lang_items
+
     def getTranslations(self):
         return list(self.iterTranslations())
 
@@ -117,13 +161,12 @@ class MultilingualTranslationGraph(object):
         translations = set(getattr(aq_base(parent), "translations", ()))
         translations.add(self.uuid)
         parent.translations = translations
-        modified(parent)
 
     def removeTranslation(self):
         result = self.catalog(translations=self.uuid)
         if len(result) != 1:
-            raise ValueError("Translation parent not found.")
+            return
 
         obj = result[0].getObject()
-        obj.translations = obj.translations - set(self.uuids)
-        modified(obj)
+        obj.translations = obj.translations - set(self.uuid)
+        return obj
