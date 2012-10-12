@@ -2,9 +2,7 @@ from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import IntegrationTesting
 
-
-def dotted_name(interface):
-    return "%s.%s" % (interface.__module__, interface.__name__)
+from collective.multilingual.utils import dottedName
 
 
 class Fixture(PloneSandboxLayer):
@@ -69,6 +67,16 @@ class Fixture(PloneSandboxLayer):
             folder1, "Item", id="item",
             )
 
+        # 6. Create a nested, default item (untranslated).
+        createContentInContainer(
+            folder1, "Item", id="default-item",
+            )
+
+        # 7. Set default pages
+        portal.default_page = 'front-page'
+        danish.default_page = 'forside'
+        folder1.default_page = 'default-item'
+
     def setUpLanguages(self, portal):
         # Add "Danish" and "German" as supported languages.
         portal.portal_languages.addSupportedLanguage('da')
@@ -83,9 +91,9 @@ class Fixture(PloneSandboxLayer):
         from collective.multilingual.interfaces import IMultilingual
 
         bs = (
-            dotted_name(IMultilingual),
-            dotted_name(IOwnership),
-            dotted_name(INameFromTitle),
+            dottedName(IMultilingual),
+            dottedName(IOwnership),
+            dottedName(INameFromTitle),
             )
 
         content_types = [

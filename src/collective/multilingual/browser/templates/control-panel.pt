@@ -9,7 +9,8 @@
       i18n:domain="collective.multilingual">
 
   <body>
-    <div metal:fill-slot="formtop">
+    <div metal:fill-slot="formbottom">
+      <hr />
       <p i18n:translate="">
         The site default language is
         <span i18n:name="lang_name" tal:replace="view/getDefaultLanguage" />.

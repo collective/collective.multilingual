@@ -36,6 +36,11 @@
       />
 
   <utility
+      name="collective.multilingual.vocabularies.FTIs"
+      factory=".vocabularies.FTIs"
+      />
+
+  <utility
       name="collective.multilingual.vocabularies.ContainerFTIs"
       factory=".vocabularies.ContainerFTIs"
       />

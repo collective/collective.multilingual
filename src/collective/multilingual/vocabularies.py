@@ -5,6 +5,7 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityContainer
+from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import resolveDottedName
 
 from Products.CMFCore.utils import getToolByName
@@ -64,8 +65,8 @@ class Translations(object):
                     'language': display_languages.get(
                         obj.language, _(u"Neutral")),
                     'title': obj.title,
-                    }),
-                )
+                }),
+            )
 
         if IMultilingual.providedBy(context):
             for uuid in getattr(aq_base(context), "translations", ()):
@@ -80,8 +81,9 @@ class Translations(object):
         return DexterityContentVocabulary(createTerm, terms)
 
 
-class ContainerFTIs(object):
+class FTIs(object):
     implements(IVocabularyFactory)
+    interface = IDexterityContent
 
     def __call__(self, context):
         sm = getSiteManager(context)
@@ -90,7 +92,11 @@ class ContainerFTIs(object):
         terms = []
         for fti in ftis:
             cls = resolveDottedName(fti.klass)
-            if IDexterityContainer.implementedBy(cls):
+            if self.interface.implementedBy(cls):
                 terms.append(SimpleTerm(fti, fti.id, fti.title))
 
         return SimpleVocabulary(terms)
+
+
+class ContainerFTIs(FTIs):
+    interface = IDexterityContainer
