@@ -82,7 +82,7 @@ class AddingLanguageIndependentValue(ValueBase):
                     alsoProvides(self.widget, ILanguageIndependentWidget)
                     return value
 
-        return NO_VALUE
+        return self.field.default
 
 
 class LanguageIndependentWidgetLabel(ValueBase):
