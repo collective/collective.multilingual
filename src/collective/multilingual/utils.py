@@ -1,8 +1,12 @@
 import logging
 
 from Products.CMFCore.utils import getToolByName
+from BTrees.Length import Length
+from zope.annotation.interfaces import IAnnotations
 
 logger = logging.getLogger("multilingual")
+
+COUNTER = "collective.multilingual.counter"
 
 
 def dottedName(interface):
@@ -17,3 +21,14 @@ def getObjectByuuid(context, uuid):
         return
 
     return result[0].getObject()
+
+
+def getPersistentTranslationCounter(self):
+    site = getToolByName(self, 'portal_url').getPortalObject()
+    annotations = IAnnotations(site)
+    try:
+        length = annotations[COUNTER]
+    except KeyError:
+        length = annotations[COUNTER] = Length()
+
+    return length

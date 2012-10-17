@@ -1,18 +1,23 @@
 from plone.uuid.interfaces import IUUID
 from zope.interface import implements
+
 from zope.component import adapts
-from zope.component import getMultiAdapter
 
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Acquisition import aq_base
-from plone.dexterity.interfaces import IDexterityContainer
-from plone.dexterity.interfaces import IDexterityContent
-from plone.app.layout.navigation.defaultpage import isDefaultPage
+
+from plone.memoize import ram
 
 from .interfaces import IMultilingual
 from .interfaces import ITranslationGraph
 from .utils import logger
+from .utils import getPersistentTranslationCounter
+
+
+def _cachekey(method, self):
+    counter = getPersistentTranslationCounter(self.context)
+    return counter.value, self.uuid
 
 
 def _recurse(catalog, uuids):
@@ -50,7 +55,8 @@ class MultilingualTranslationGraph(object):
         self.catalog = getToolByName(context, 'portal_catalog')
         self.uuid = str(IUUID(context))
 
-    def getCanonicalContent(self, catalog=None):
+    @ram.cache(_cachekey)
+    def getCanonicalContent(self):
         obj = self.getParent()
         if obj is None:
             return self.context
@@ -64,6 +70,7 @@ class MultilingualTranslationGraph(object):
 
         return ITranslationGraph(obj).getCanonicalContent()
 
+    @ram.cache(_cachekey)
     def getParent(self):
         result = self.catalog(translations=self.uuid)
 
@@ -75,6 +82,7 @@ class MultilingualTranslationGraph(object):
 
         return result[0].getObject()
 
+    @ram.cache(_cachekey)
     def getNearestTranslations(self):
         lt = getToolByName(self.context, 'portal_languages')
         supported = lt.listSupportedLanguages()
@@ -122,6 +130,7 @@ class MultilingualTranslationGraph(object):
 
         return lang_items
 
+    @ram.cache(_cachekey)
     def getTranslations(self):
         return list(self.iterTranslations())
 
@@ -168,6 +177,7 @@ class MultilingualTranslationGraph(object):
         translations = set(getattr(aq_base(parent), "translations", ()))
         translations.add(self.uuid)
         parent.translations = translations
+        getPersistentTranslationCounter(self.context).change(1)
 
     def removeTranslation(self):
         result = self.catalog(translations=self.uuid)
@@ -176,4 +186,5 @@ class MultilingualTranslationGraph(object):
 
         obj = result[0].getObject()
         obj.translations = obj.translations - set(self.uuid)
+        getPersistentTranslationCounter(self.context).change(1)
         return obj
