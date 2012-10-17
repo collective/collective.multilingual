@@ -47,6 +47,7 @@ def getLanguageIndependent(context):
 LANGUAGE_INDEPENDENT_KEY = u"plone.autoform.languageindependent"
 
 
+
 class IBrowserLayer(Interface):
     """Add-on browser layer.
 

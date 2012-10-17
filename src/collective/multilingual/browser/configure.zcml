@@ -105,7 +105,7 @@
            ..interfaces.IBrowserLayer
            z3c.form.interfaces.IForm
            zope.schema.interfaces.IField
-           .interfaces.ILanguageIndependentWidget"
+           z3c.form.interfaces.IWidget"
       factory=".form.LanguageIndependentWidgetLabel"
       name="label"
       />

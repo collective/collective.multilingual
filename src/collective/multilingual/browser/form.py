@@ -2,7 +2,6 @@
 
 from zope.interface import implements
 from zope.interface import implementer
-from zope.interface import alsoProvides
 from zope.component import queryMultiAdapter
 from zope.i18n import Message
 from zope.i18nmessageid import MessageFactory
@@ -16,7 +15,6 @@ from Acquisition import aq_base
 
 from ..interfaces import LANGUAGE_INDEPENDENT_KEY
 from ..interfaces import IMultilingual
-from .interfaces import ILanguageIndependentWidget
 
 
 @implementer(IValue)
@@ -25,14 +23,15 @@ def adaptGroupFormWidgetValue(context, request, form, field, widget):
         (context, request, form.parentForm, field, widget),
         IValue,
         name="default"
-        )
+    )
 
 
 def isLanguageIndependent(field):
+    if field.interface is None:
+        return False
+
     try:
-        return field.interface.getTaggedValue(
-            LANGUAGE_INDEPENDENT_KEY
-            )
+        return field.interface.getTaggedValue(LANGUAGE_INDEPENDENT_KEY)
     except KeyError:
         return False
 
@@ -79,7 +78,6 @@ class AddingLanguageIndependentValue(ValueBase):
                 except AttributeError:
                     pass
                 else:
-                    alsoProvides(self.widget, ILanguageIndependentWidget)
                     return value
 
         if self.field.default is None:
@@ -92,9 +90,9 @@ class LanguageIndependentWidgetLabel(ValueBase):
     def get(self):
         label = self.widget.label
 
-        if isinstance(label, Message):
+        if isLanguageIndependent(self.field) and isinstance(label, Message):
             label = MessageFactory(label.domain)(
                 u"${label} •", mapping={'label': label}
-                )
+            )
 
         return label

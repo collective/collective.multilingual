@@ -9,6 +9,7 @@ from Acquisition import aq_base
 from .interfaces import ITranslationGraph
 from .interfaces import getLanguageIndependent
 from .utils import logger
+from .utils import getPersistentTranslationCounter
 
 
 def objectAddedEvent(context, event):
