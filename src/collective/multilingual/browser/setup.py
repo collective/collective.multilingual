@@ -1,4 +1,5 @@
 from zope.interface import implements
+from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope import schema
 from zope.i18n import translate
@@ -13,6 +14,7 @@ from z3c.form import field
 
 from plone.dexterity.utils import createContentInContainer
 from plone.app.dexterity.behaviors.metadata import IBasic
+from Products.CMFCore.interfaces import ISiteRoot
 
 from Products.CMFCore.utils import getToolByName
 from Products.statusmessages.interfaces import IStatusMessage
@@ -126,6 +128,9 @@ class SetupLanguageView(Form):
         folder.title = data['title']
         folder.description = data['description']
         folder.language = lang_id
+
+        # It's a site root!
+        alsoProvides(folder, ISiteRoot)
 
         # We've modified the object; reindex.
         notify(modified(folder))

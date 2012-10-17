@@ -38,9 +38,14 @@ class Fixture(PloneSandboxLayer):
             portal, "Container", id="da", language=u"da",
             )
 
-        createContentInContainer(
+        german = createContentInContainer(
             portal, "Container", id="de", language=u"de",
             )
+
+        from Products.CMFCore.interfaces import ISiteRoot
+        from zope.interface import alsoProvides
+        for site in (danish, german):
+            alsoProvides(site, ISiteRoot)
 
         # 3. Create a Danish translation of the front page:
         createContentInContainer(

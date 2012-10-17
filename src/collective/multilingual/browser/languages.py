@@ -1,6 +1,10 @@
 from zope.security import checkPermission
+
 from plone.app.i18n.locales.browser import selector
+from plone.app.layout.navigation.defaultpage import isDefaultPage
+
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.interfaces import ISiteRoot
 
 from ..interfaces import ITranslationGraph
 from ..interfaces import IMultilingual
@@ -13,12 +17,19 @@ class LanguageSelector(selector.LanguageSelector):
         if not IMultilingual.providedBy(self.context):
             return entries
 
-        site = getToolByName(self.context, name="portal_url").getPortalObject()
-        lang_items = ITranslationGraph(self.context).getNearestTranslations()
+        context = self.context.aq_inner
+        parent = context.__parent__
+        if isDefaultPage(parent, context):
+            if not ISiteRoot.providedBy(parent):
+                context = parent
+
+        lang_items = ITranslationGraph(context).getNearestTranslations()
+
         translations = {}
-        for lang_id, item, contained in lang_items:
+        for lang_id, item, distance in lang_items:
             translations[lang_id] = item
 
+        site = getToolByName(self.context, name="portal_url").getPortalObject()
         for entry in entries:
             lang_id = entry['code']
             obj = translations.get(lang_id)

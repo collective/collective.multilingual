@@ -52,25 +52,55 @@ first be translated into German, and then from this translation, into
 French. This would be a graph with three vertices and two edges.
 
 
+Default pages
+-------------
+
+We must take special consideration when dealing with content which is
+or has a default page. Plone's user interface allows only a single
+interface for the composition of a container and a default page.
+
+If a ``context`` is a default page, then we'll look at the parent
+translation graph and for each supported language, determine if a
+translation is available and if that is the case, determine whether it
+has a default page.
+
+
 API
 ---
 
 The interface ``ITranslationGraph`` provides a view into the
 translation graph for a context that provides the ``IMultilingual``
-interface (implemented by the "Multilingual" behavior):
+interface (implemented by the "Multilingual" behavior).
+
+For each content object (this will be referred to in the following as
+the ``context``) We can turn the graph into a mapping from language
+ids to content objects, each of which is the ``context`` in some
+translation:
 
 >>> graph = ITranslationGraph(context)
 >>> translations = graph.getTranslations()
 
-The translations returned are a list ``(language_id, content)`` of all
-the content items appearing in the translation graph *except* the
-adaptation context itself.
+The ``translations`` returned are a list of ``(language_id, content)``
+which we can pass to the ``dict`` constructor to turn it into a
+mapping object. Note that ``context`` is omitted.
 
-You can turn it into a dictionary to look up a translation in some
-language.
+>>> mapping = dict(translations)
 
->>> languages = dict(translations)
->>> item = language['de']
+For some applications, we want to establish a relation for each of the
+supported languages to allow a user or visitor to get to the *nearest*
+content object appearing in a supported language of choice. In this
+situation, nearest will be defined as the closest ancestor
+translation:
+
+>>> nearest = graph.getNearestTranslations()
+
+The ``nearest`` mapping is used to generate the "Translate" menu that
+let's a contributor or editor navigate between the different
+translations of a content object.
+
+It's also used in the language selection viewlet which appears in
+Plone when cookie-based language selection is enabled (see the
+language tool for more information).
 
 
 To-Do

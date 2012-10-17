@@ -81,11 +81,16 @@ class ITranslationGraph(Interface):
     def getNearestTranslations(self):
         """Return nearest translations for all supported languages.
 
-        For each language, a tuple ``(lang_id, item, contained)`` is
-        returned, where ``item`` is the nearest item translated into
-        the specified language in the parent chain of the canonical
-        content item, and ``contained`` is true if the item is
-        contained in the current translation graph.
+        For each language, a tuple is returned::
+
+          (lang_id, obj, distance)
+
+        The ``distance`` parameter corresponds to how many hops there
+        are between the provided ``context`` and that for which there
+        is a translation contained in the translation graph.
+
+        If the distance is zero, then the translation is contained in
+        the current translation graph: ``self``.
 
         Note that the context is omitted from the result.
         """

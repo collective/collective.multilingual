@@ -6,6 +6,9 @@ from zope.component import getMultiAdapter
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Acquisition import aq_base
+from plone.dexterity.interfaces import IDexterityContainer
+from plone.dexterity.interfaces import IDexterityContent
+from plone.app.layout.navigation.defaultpage import isDefaultPage
 
 from .interfaces import IMultilingual
 from .interfaces import ITranslationGraph
@@ -80,8 +83,9 @@ class MultilingualTranslationGraph(object):
         lang_items = []
         langs = set(lang[0] for lang in supported)
         default_lang = lt.getDefaultLanguage()
+        distance = 0
 
-        # 1. Determine existing translations.
+        # 1. Objects appearing in the present translation graph.
         for lang_id, item in self.getTranslations():
             if not lang_id:
                 lang_id = default_lang
@@ -93,25 +97,28 @@ class MultilingualTranslationGraph(object):
                 # supported. Ignore it!
                 continue
 
-            lang_items.append((lang_id, item, True))
+            entry = lang_id, item, distance
+            lang_items.append(entry)
 
-        # 2. Look for parent folder translations.
+        # 2. Iterate through parent chain
         folder = self.context
         while langs and not IPloneSiteRoot.providedBy(folder):
             folder = folder.__parent__
+            distance += 1
             if IMultilingual.providedBy(folder):
                 translations = ITranslationGraph(folder).getTranslations()
+
                 for lang_id, item in translations:
                     try:
                         langs.remove(lang_id)
                     except KeyError:
                         continue
 
-                    lang_items.append((lang_id, item, False))
+                    lang_items.append((lang_id, item, distance))
 
         # 3. Process remaining supported languages.
         for lang_id in langs:
-            lang_items.append((lang_id, None, False))
+            lang_items.append((lang_id, None, -1))
 
         return lang_items
 

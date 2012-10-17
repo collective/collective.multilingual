@@ -1,6 +1,7 @@
 from zope.lifecycleevent import modified
 from zope.schema.interfaces import ValidationError
 from plone.uuid.interfaces import IUUID
+from plone.app.layout.navigation.defaultpage import isDefaultPage
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Acquisition import aq_base
@@ -46,6 +47,10 @@ def objectAddedEvent(context, event):
             "parent %r is newer than translation %r." % (
                 uuid, str(IUUID(context)))
             )
+
+    if isDefaultPage(parent.__parent__, parent):
+        container.default_page = context.getId()
+        modified(container)
 
     # Now, append the translation to the source item's list.
     wrapped = context.__of__(container)

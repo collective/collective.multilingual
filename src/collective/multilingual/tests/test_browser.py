@@ -1,4 +1,4 @@
-import unittest
+import unittest2 as unittest
 
 from ..testing import INTEGRATION_TESTING
 
@@ -101,10 +101,10 @@ class TestUtility(unittest.TestCase):
         tds = [td.text_content().strip() for td in table.iterdescendants('td')]
         self.assertEqual(
             tds,
-            ['Any', '7', '100%',
-             'Danish', '3', '43%',
+            ['Any', '8', '100%',
+             'Danish', '3', '38%',
              'English', '0', '0%',
-             'German', '1', '14%',
+             'German', '1', '12%',
              'Spanish', '0', '0%']
             )
 
@@ -134,6 +134,12 @@ class TestUtility(unittest.TestCase):
         form.submit('Create')
         self.assertTrue('Container created.' in browser.contents)
         self.assertTrue('es' in self.layer['portal'].objectIds())
+
+        # It's a site root.
+        from Products.CMFCore.interfaces import ISiteRoot
+        self.assertTrue(
+            ISiteRoot.providedBy(self.layer['portal']['es'])
+        )
 
         # We've been redirected to the add form:
         self.assertTrue(

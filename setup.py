@@ -40,7 +40,7 @@ setup(name='collective.multilingual',
       ],
       extras_require = {
           'test': [
-              'plone.testing',
+              'plone.testing>=4.0.6',
               'plone.app.testing',
               ]
           },

@@ -2,75 +2,101 @@
 
 import urllib
 
-from zope.component import getMultiAdapter
-from zope.component import getUtility
 from zope.i18n import translate
 
 from Products.CMFCore.utils import getToolByName
-from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.interfaces import ISiteRoot
 
 from Acquisition import aq_base
 
 from zope.browsermenu.menu import BrowserMenu
 from zope.browsermenu.menu import BrowserSubMenuItem
 
+from plone.dexterity.interfaces import IDexterityContent
 from plone.memoize.instance import memoize
 from plone.uuid.interfaces import IUUID
-from plone.uuid.interfaces import IUUIDAware
-
+from plone.app.layout.navigation.defaultpage import isDefaultPage
+from plone.app.layout.navigation.defaultpage import getDefaultPage
 
 from ..i18n import MessageFactory as _
 from ..interfaces import IBrowserLayer
 from ..interfaces import ITranslationGraph
 
 
-class TranslateMenu(BrowserMenu):
-    def getMenuItems(self, context, request):
-        menu = []
+def getTranslationActionItems(context, request):
+    """Return action menu items for 'Translate' menu."""
 
-        if not IUUIDAware.providedBy(context):
-            return menu
+    parent = context.__parent__
+    is_default_page = isDefaultPage(parent, context)
 
-        lt = getToolByName(context, 'portal_languages')
-        showflags = lt.showFlags()
-        uuid = str(IUUID(context))
-        current_lang = getattr(aq_base(context), "language", "")
-        default_lang = lt.getDefaultLanguage()
-        display_languages = request.locale.displayNames.languages
+    # There is a special case here which is when the ``context`` is a
+    # default page. In this case, we compute the nearest translations
+    # of the parent folder, unless the parent is the Plone site root.
+    use_parent = is_default_page and not ISiteRoot.providedBy(parent)
 
-        # 1. Get translation information for each supported language.
-        lang_items = ITranslationGraph(context).getNearestTranslations()
+    if use_parent:
+        graph = ITranslationGraph(parent)
+    else:
+        graph = ITranslationGraph(context)
 
-        site = getToolByName(context, name="portal_url").getPortalObject()
-        site_url = site.absolute_url()
+    current_lang = getattr(aq_base(context), "language", "")
+    lt = getToolByName(context, 'portal_languages')
+    pt = getToolByName(context, name="portal_url")
+    showflags = lt.showFlags()
+    default_lang = lt.getDefaultLanguage()
+    display_languages = request.locale.displayNames.languages
+    site = pt.getPortalObject()
+    site_url = site.absolute_url()
 
-        # 2. Convert items to menu actions.
-        for lang_id, item, contained in lang_items:
-            if lang_id == current_lang:
-                continue
+    lang_items = graph.getNearestTranslations()
 
-            if not current_lang and lang_id == default_lang:
-                continue
+    menu = []
+    for lang_id, item, distance in lang_items:
+        if lang_id == current_lang:
+            continue
 
-            icon = showflags and lt.getFlagForLanguageCode(lang_id) or None
+        if not current_lang and lang_id == default_lang:
+            continue
 
-            display_lang_name = display_languages[lang_id]
-            title = display_lang_name
+        icon = showflags and lt.getFlagForLanguageCode(lang_id) or None
 
-            if contained:
-                url = "/edit"
+        display_lang_name = display_languages[lang_id]
+        title = display_lang_name
+
+        if use_parent:
+            if distance >= 0:
+                distance += 1
+
+            if item is not None:
+                default_page = getDefaultPage(item)
+                if default_page is not None:
+                    item = default_page
+                    distance = 0
+                else:
+                    add_context = context
             else:
-                url = "/++add++%s?%s" % (
-                    context.portal_type,
-                    urllib.urlencode({
-                        'translation': uuid,
-                        'language': lang_id,
-                        }))
+                add_context = parent
+        else:
+            add_context = context
 
-            # 3. Determine if we've got a translation target folder or
-            #    if we need to first ask user to set up the top-level
-            #    language folder.
+        # If the item already exists, link to its view form.
+        if distance == 0:
+            assert item is not None
+            url = "/edit"
+
+        # Otherwise, link to the add form.
+        else:
+            uuid = str(IUUID(add_context))
+            portal_type = add_context.portal_type
+
+            url = "/++add++%s?%s" % (
+                portal_type,
+                urllib.urlencode({
+                    'translation': uuid,
+                    'language': lang_id,
+                }))
+
             if item is None:
                 if lang_id == default_lang:
                     item = site
@@ -87,54 +113,58 @@ class TranslateMenu(BrowserMenu):
 
                         action_url = site_url + url
 
-            # 4. We've got a target folder, so just use the add-URL.
-            if item is not None:
-                action_url = item.absolute_url() + url
+        if item is not None:
+            action_url = item.absolute_url() + url
 
-            entry = {
-                "title": translate(title, context=request),
-                "description": _(u"description_translate_into",
-                                    default=u"Translate into ${lang_name}",
-                                 mapping={"lang_name": display_lang_name}),
-                "action": action_url,
-                "selected": False,
-                "icon": icon,
-                "width": 14,
-                "height": 11,
-                "extra": {"id": "translate_into_%s" % lang_id,
-                           "separator": None,
-                           "class": ""},
-                "submenu": None,
-                }
+        entry = {
+            "title": translate(title, context=request),
+            "description": _(u"description_translate_into",
+                             default=u"Translate into ${lang_name}",
+                             mapping={"lang_name": display_lang_name}),
+            "action": action_url,
+            "selected": False,
+            "icon": icon,
+            "width": 14,
+            "height": 11,
+            "extra": {"id": "translate_into_%s" % lang_id,
+                      "separator": None,
+                      "class": ""},
+            "submenu": None,
+        }
 
-            menu.append(entry)
+        menu.append(entry)
 
-        # 5. Sort.
-        menu.sort(key=lambda item: unicode(item['title']))
+    menu.sort(key=lambda item: unicode(item['title']))
+
+    return menu
+
+
+class TranslateMenu(BrowserMenu):
+    def getMenuItems(self, context, request):
+        if not IDexterityContent.providedBy(context):
+            return []
+
+        items = getTranslationActionItems(context, request)
 
         # 6. Add link to language controlpanel.
-        site = getUtility(ISiteRoot)
+        site = getToolByName(context, name="portal_url").getPortalObject()
         mt = getToolByName(context, "portal_membership")
         if mt.checkPermission(ManagePortal, site):
-            portal_state = getMultiAdapter((context, request),\
-                name="plone_portal_state")
-
-            menu.append({
+            items.append({
                 "title": _(u"title_language_settings",
                            default=u"Language settings..."),
                 "description": _(u"description_language_settings",
-                                   default=u""),
-                "action": portal_state.portal_url() + \
-                          "/@@language-controlpanel",
+                                 default=u""),
+                "action": site.absolute_url() + "/@@language-controlpanel",
                 "selected": False,
                 "icon": None,
                 "extra": {"id": "_language_settings",
                           "separator": None,
                           "class": ""},
                 "submenu": None,
-                })
+            })
 
-        return menu
+        return items
 
 
 class TranslateSubMenuItem(BrowserSubMenuItem):

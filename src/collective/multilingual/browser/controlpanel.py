@@ -78,7 +78,7 @@ class ControlPanelEditForm(controlpanel.RegistryEditForm):
     template = ViewPageTemplateFile("templates/control-panel.pt")
 
     label = _(u"Multilingual")
-    description = _(u"Statistics for content in multiple languages.")
+    description = _(u"Settings and statistics for content in multiple languages.")
 
     def getContent(self):
         return ImplicitAcquisitionWrapper(
