@@ -3,6 +3,8 @@ This add-on provides support for content in multiple languages
 
 Compatibility: Plone 4.2+ with Dexterity
 
+.. image:: https://secure.travis-ci.org/collective/collective.multilingual.png
+    :target: http://travis-ci.org/collective/collective.multilingual
 
 Overview
 ========

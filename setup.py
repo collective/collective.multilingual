@@ -35,8 +35,8 @@ setup(name='collective.multilingual',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'plone.dexterity',
-          'plone.app.registry',
+          'Products.CMFPlone>=4.1',
+          'plone.app.dexterity',
       ],
       extras_require = {
           'test': [
