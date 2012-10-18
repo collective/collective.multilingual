@@ -6,7 +6,6 @@ from zope.i18n import translate
 
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.interfaces import ISiteRoot
 
 from Acquisition import aq_base
 
@@ -18,6 +17,7 @@ from plone.memoize.instance import memoize
 from plone.uuid.interfaces import IUUID
 from plone.app.layout.navigation.defaultpage import isDefaultPage
 from plone.app.layout.navigation.defaultpage import getDefaultPage
+from plone.app.layout.navigation.interfaces import INavigationRoot
 
 from ..i18n import MessageFactory as _
 from ..interfaces import IBrowserLayer
@@ -32,8 +32,9 @@ def getTranslationActionItems(context, request):
 
     # There is a special case here which is when the ``context`` is a
     # default page. In this case, we compute the nearest translations
-    # of the parent folder, unless the parent is the Plone site root.
-    use_parent = is_default_page and not ISiteRoot.providedBy(parent)
+    # of the parent folder, unless the parent is a navigation or site
+    # root.
+    use_parent = is_default_page and not INavigationRoot.providedBy(parent)
 
     if use_parent:
         graph = ITranslationGraph(parent)

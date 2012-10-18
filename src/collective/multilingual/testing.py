@@ -42,10 +42,10 @@ class Fixture(PloneSandboxLayer):
             portal, "Container", id="de", language=u"de",
             )
 
-        from Products.CMFCore.interfaces import ISiteRoot
+        from plone.app.layout.navigation.interfaces import INavigationRoot
         from zope.interface import alsoProvides
         for site in (danish, german):
-            alsoProvides(site, ISiteRoot)
+            alsoProvides(site, INavigationRoot)
 
         # 3. Create a Danish translation of the front page:
         createContentInContainer(

@@ -136,9 +136,9 @@ class TestUtility(unittest.TestCase):
         self.assertTrue('es' in self.layer['portal'].objectIds())
 
         # It's a site root.
-        from Products.CMFCore.interfaces import ISiteRoot
+        from plone.app.layout.navigation.interfaces import INavigationRoot
         self.assertTrue(
-            ISiteRoot.providedBy(self.layer['portal']['es'])
+            INavigationRoot.providedBy(self.layer['portal']['es'])
         )
 
         # We've been redirected to the add form:

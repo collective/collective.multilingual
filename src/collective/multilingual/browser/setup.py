@@ -14,7 +14,7 @@ from z3c.form import field
 
 from plone.dexterity.utils import createContentInContainer
 from plone.app.dexterity.behaviors.metadata import IBasic
-from Products.CMFCore.interfaces import ISiteRoot
+from plone.app.layout.navigation.interfaces import INavigationRoot
 
 from Products.CMFCore.utils import getToolByName
 from Products.statusmessages.interfaces import IStatusMessage
@@ -33,7 +33,7 @@ class IAdding(Interface):
                       u"as the language root folder."),
         required=True,
         vocabulary="collective.multilingual.vocabularies.ContainerFTIs"
-        )
+    )
 
     schema.ASCIILine()
 
@@ -87,9 +87,9 @@ class SetupFormDefaults(object):
 
 
 class SetupLanguageView(Form):
-    fields = field.Fields(IBasic) + \
-             field.Fields(IAdding) + \
-             field.Fields(next_url, language)
+    fields = (field.Fields(IBasic) +
+              field.Fields(IAdding) +
+              field.Fields(next_url, language))
 
     ignoreContext = True
 
@@ -98,8 +98,8 @@ class SetupLanguageView(Form):
     @property
     def description(self):
         lang_id, lang_name = self.getLanguage()
-        return _(u"Submit this form to create a new folder for content " \
-                 u"in ${lang_name}. It will be added to " \
+        return _(u"Submit this form to create a new folder for content "
+                 u"in ${lang_name}. It will be added to "
                  u"your site root as \"/${lang_id}\".",
                  mapping={'lang_id': lang_id, 'lang_name': lang_name})
 
@@ -120,7 +120,7 @@ class SetupLanguageView(Form):
 
         folder = createContentInContainer(
             self.context, fti.getId(), id=lang_id,
-            )
+        )
 
         # It's important that we don't set the title in the call
         # above, because we don't want to have the id chosen based on
@@ -129,8 +129,8 @@ class SetupLanguageView(Form):
         folder.description = data['description']
         folder.language = lang_id
 
-        # It's a site root!
-        alsoProvides(folder, ISiteRoot)
+        # It's a navigation root!
+        alsoProvides(folder, INavigationRoot)
 
         # We've modified the object; reindex.
         notify(modified(folder))
@@ -138,6 +138,6 @@ class SetupLanguageView(Form):
         IStatusMessage(self.request).addStatusMessage(
             _(u"${fti_name} created.", mapping={
                 'fti_name': translate(fti.Title(), context=self.request)
-                }), "info")
+            }), "info")
 
         self.request.response.redirect(data['next_url'])

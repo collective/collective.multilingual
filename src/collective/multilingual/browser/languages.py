@@ -2,9 +2,8 @@ from zope.security import checkPermission
 
 from plone.app.i18n.locales.browser import selector
 from plone.app.layout.navigation.defaultpage import isDefaultPage
-
+from plone.app.layout.navigation.interfaces import INavigationRoot
 from Products.CMFCore.utils import getToolByName
-from Products.CMFCore.interfaces import ISiteRoot
 
 from ..interfaces import ITranslationGraph
 from ..interfaces import IMultilingual
@@ -20,7 +19,7 @@ class LanguageSelector(selector.LanguageSelector):
         context = self.context.aq_inner
         parent = context.__parent__
         if isDefaultPage(parent, context):
-            if not ISiteRoot.providedBy(parent):
+            if not INavigationRoot.providedBy(parent):
                 context = parent
 
         lang_items = ITranslationGraph(context).getNearestTranslations()
