@@ -1,0 +1,143 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# Thomas Clement Mogensen <tmog@headnet.dk, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: collective.multilingual 1.0\n"
+"POT-Creation-Date: 2012-10-18 09:00+0000\n"
+"PO-Revision-Date: 2012-10-18 11:00+0200\n"
+"Last-Translator: Thomas Clement Mogensen <tmog@headnet.dk>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: da\n"
+"Language-Name: Danish\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: collective.multilingual\n"
+
+#. Default: "# of Items"
+#: ./browser/templates/control-panel.pt:24
+msgid "# of Items"
+msgstr "antal elementer"
+
+#: ./browser/setup.py:139
+msgid "${fti_name} created."
+msgstr "${fti_name} oprettet."
+
+#: ./browser/menu.py:107
+msgid "${lang_name} (setup required)"
+msgstr "${lang_name} (mangler opsætning)"
+
+#: ./vocabularies.py:64
+msgid "${language}: ${title}"
+msgstr "${language}: ${title}"
+
+#: ./browser/controlpanel.py:134
+msgid "Any"
+msgstr "Enhver"
+
+#: ./browser/controlpanel.py:110
+msgid "Catalog does not have a language index."
+msgstr "Kataloget har ikke et sprogindeks (language)."
+
+#: ./browser/setup.py:31
+msgid "Content type"
+msgstr "Indholdstype"
+
+#: ./browser/controlpanel.py:29
+msgid "Content types"
+msgstr "Indholdstyper"
+
+#: ./browser/setup.py:111
+msgid "Create"
+msgstr "Opret"
+
+#: ./browser/setup.py:96
+msgid "Create language folder"
+msgstr "Opret sprogmappe"
+
+#. Default: "Language"
+#: ./browser/templates/control-panel.pt:23
+msgid "Language"
+msgstr "Sprog"
+
+#: ./vocabularies.py:77
+msgid "Missing"
+msgstr "Mangler"
+
+#: ./browser/controlpanel.py:80
+msgid "Multilingual"
+msgstr "Flere sprog"
+
+#: ./vocabularies.py:66
+msgid "Neutral"
+msgstr "Neutral"
+
+#: ./browser/setup.py:115
+msgid "Please correct errors"
+msgstr "Ret venligst de angivne fejl"
+
+#. Default: "Ratio"
+#: ./browser/templates/control-panel.pt:25
+msgid "Ratio"
+msgstr "Forhold"
+
+#: ./browser/setup.py:32
+msgid "Select the content type to create and use as as the language root folder."
+msgstr "Vælg den indholdstype der skal oprettes og benyttes rodmappe for sproget."
+
+#: ./browser/controlpanel.py:30
+msgid "Select which content types should support content in multiple content (the \"Multilingual\" behavior)."
+msgstr "Vælg de indholdstyper der skal understøtte flere sprog (opførslen \"Flere sprog\")"
+
+#: ./browser/controlpanel.py:81
+msgid "Settings and statistics for content in multiple languages."
+msgstr "Indstillinger og statistik for flersproget indhold."
+
+#: ./browser/setup.py:101
+msgid "Submit this form to create a new folder for content in ${lang_name}. It will be added to your site root as \"/${lang_id}\"."
+msgstr "Via denne formular oprettes en ny mappe til indhold på ${lang_name}. Mappe tilføjes i sitets rod som \"/${lang_id}\"."
+
+#: ./interfaces.py:63
+msgid "The items referenced in this field are the direct translations."
+msgstr "Dette felt indeholder referencer til direkte oversættelser."
+
+#. Default: "The site default language is ${lang_name}. However, in the table below, the statistics for this language do not include content for which a language has not been explicitly set."
+#: ./browser/templates/control-panel.pt:16
+msgid "The site default language is ${lang_name}. However, in the table below, the statistics for this language do not include content for which a language has not been explicitly set."
+msgstr "${lang_name} er valgt som sitets standardsprog. I tabeller nedenfor vises dog kun statistik for det indhold der eksplicit er opmærket med et sprog."
+
+#: ./browser/setup.py:76
+msgid "This folder contains content in ${lang_name}."
+msgstr "Denne mappe indeholder indhold på ${lang_name}."
+
+#: ./interfaces.py:62
+msgid "Translations"
+msgstr "Oversættelser"
+
+#: ./browser/menu.py:156
+msgid "description_language_settings"
+msgstr ""
+
+#. Default: "Translate into ${lang_name}"
+#: ./browser/menu.py:121
+msgid "description_translate_into"
+msgstr "Oversæt til ${lang_name}"
+
+#. Default: "Translate"
+#: ./browser/menu.py:171
+msgid "label_translate_menu"
+msgstr "Oversæt"
+
+#. Default: "Language settings..."
+#: ./browser/menu.py:154
+msgid "title_language_settings"
+msgstr "Sprogindstillinger..."
+
+#. Default: "Manage translations for your content."
+#: ./browser/menu.py:172
+msgid "title_translate_menu"
+msgstr "Administrér dit indholds oversættelser."
+
