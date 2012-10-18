@@ -5,5 +5,5 @@ from .interfaces import IMultilingual
 @indexer(IMultilingual)
 def translations(obj):
     unwrapped = aq_base(obj)
-    return getattr(unwrapped, "translations", set())
+    return set(getattr(unwrapped, "translations", ()) or ())
 

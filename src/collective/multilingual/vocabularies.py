@@ -69,7 +69,7 @@ class Translations(object):
             )
 
         if IMultilingual.providedBy(context):
-            for uuid in getattr(aq_base(context), "translations", ()):
+            for uuid in getattr(aq_base(context), "translations", ()) or ():
                 try:
                     term = createTerm(uuid)
                 except LookupError:

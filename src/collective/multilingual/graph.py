@@ -146,7 +146,7 @@ class MultilingualTranslationGraph(object):
             objects.append(canonical)
 
         # 2. Start recursion with the canonical item's direct translations.
-        uuids = getattr(aq_base(canonical), "translations", ())
+        uuids = getattr(aq_base(canonical), "translations", ()) or ()
         if uuids:
             uuids = set(uuids)
 
@@ -169,12 +169,12 @@ class MultilingualTranslationGraph(object):
                 logger.warning(
                     "expected language set on object: %s." %
                     "/".join(obj.getPhysicalPath())
-                    )
+                )
             else:
                 yield lang_id, obj
 
     def registerTranslation(self, parent):
-        translations = set(getattr(aq_base(parent), "translations", ()))
+        translations = set(getattr(aq_base(parent), "translations", ()) or ())
         translations.add(self.uuid)
         parent.translations = translations
         getPersistentTranslationCounter(self.context).change(1)
