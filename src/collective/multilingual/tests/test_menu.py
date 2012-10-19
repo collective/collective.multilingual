@@ -52,8 +52,9 @@ class TestMenu(unittest.TestCase):
         self.assertTrue(
             '/mappe/++add++Item' in actions['translate_into_da']
         )
+        from plone.uuid.interfaces import IUUID
         self.assertTrue(
-            page.UID() in actions['translate_into_da']
+            IUUID(page) in actions['translate_into_da']
         )
 
     def test_default_page_in_folder_without_translation(self):
@@ -64,8 +65,9 @@ class TestMenu(unittest.TestCase):
         self.assertTrue(
             '/da/++add++Container' in actions['translate_into_da']
         )
+        from plone.uuid.interfaces import IUUID
         self.assertTrue(
-            folder.UID() in actions['translate_into_da']
+            IUUID(folder) in actions['translate_into_da']
         )
 
     def test_translation_as_default_page_in_folder_with_translation(self):
@@ -79,6 +81,7 @@ class TestMenu(unittest.TestCase):
         self.assertTrue(
             '/plone/de/++add++Item' in actions['translate_into_de']
         )
+        from plone.uuid.interfaces import IUUID
         self.assertTrue(
-            page.UID() in actions['translate_into_de']
+            IUUID(page) in actions['translate_into_de']
         )
