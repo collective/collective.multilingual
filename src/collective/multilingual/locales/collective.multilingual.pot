@@ -50,6 +50,10 @@ msgstr ""
 msgid "Content types"
 msgstr ""
 
+#: ./browser/controlpanel.py:80
+msgid "Settings for content in multiple languages"
+msgstr ""
+
 #: ./browser/setup.py:111
 msgid "Create"
 msgstr ""
@@ -93,7 +97,7 @@ msgid "Select which content types should support content in multiple content (th
 msgstr ""
 
 #: ./browser/controlpanel.py:81
-msgid "Settings and statistics for content in multiple languages."
+msgid "Add or remove the \"Multilingual\" behavior from your content types, and view translation statistics."
 msgstr ""
 
 #: ./browser/setup.py:101

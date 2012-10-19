@@ -20,7 +20,7 @@ msgstr ""
 #. Default: "# of Items"
 #: ./browser/templates/control-panel.pt:24
 msgid "# of Items"
-msgstr "antal elementer"
+msgstr "Antal elementer"
 
 #: ./browser/setup.py:139
 msgid "${fti_name} created."
@@ -68,8 +68,8 @@ msgid "Missing"
 msgstr "Mangler"
 
 #: ./browser/controlpanel.py:80
-msgid "Multilingual"
-msgstr "Flere sprog"
+msgid "Settings for content in multiple languages"
+msgstr "Indstillinger for flersproget indhold"
 
 #: ./vocabularies.py:66
 msgid "Neutral"
@@ -93,8 +93,8 @@ msgid "Select which content types should support content in multiple content (th
 msgstr "Vælg de indholdstyper der skal understøtte flere sprog (opførslen \"Flere sprog\")"
 
 #: ./browser/controlpanel.py:81
-msgid "Settings and statistics for content in multiple languages."
-msgstr "Indstillinger og statistik for flersproget indhold."
+msgid "Add or remove the \"Multilingual\" behavior from your content types, and view translation statistics."
+msgstr "Tilføj eller fjern udvidelsen for flersproget indhold for dine indholdstyper, og se statistik over oversat indhold."
 
 #: ./browser/setup.py:101
 msgid "Submit this form to create a new folder for content in ${lang_name}. It will be added to your site root as \"/${lang_id}\"."
@@ -117,9 +117,10 @@ msgstr "Denne mappe indeholder indhold på ${lang_name}."
 msgid "Translations"
 msgstr "Oversættelser"
 
+# Default: "Language settings..."
 #: ./browser/menu.py:156
 msgid "description_language_settings"
-msgstr ""
+msgstr "Indstillinger..."
 
 #. Default: "Translate into ${lang_name}"
 #: ./browser/menu.py:121
@@ -129,7 +130,7 @@ msgstr "Oversæt til ${lang_name}"
 #. Default: "Translate"
 #: ./browser/menu.py:171
 msgid "label_translate_menu"
-msgstr "Oversæt"
+msgstr "Oversættelser"
 
 #. Default: "Language settings..."
 #: ./browser/menu.py:154
@@ -140,4 +141,7 @@ msgstr "Sprogindstillinger..."
 #: ./browser/menu.py:172
 msgid "title_translate_menu"
 msgstr "Administrér dit indholds oversættelser."
+
+msgid "Multilingual"
+msgstr "Flersproget"
 
