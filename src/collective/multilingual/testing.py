@@ -35,11 +35,11 @@ class Fixture(PloneSandboxLayer):
 
         # 2. Create language folders /da and /de:
         danish = createContentInContainer(
-            portal, "Container", id="da", language=u"da",
+            portal, "Container", id="da", language="da",
             )
 
         german = createContentInContainer(
-            portal, "Container", id="de", language=u"de",
+            portal, "Container", id="de", language="de",
             )
 
         from plone.app.layout.navigation.interfaces import INavigationRoot

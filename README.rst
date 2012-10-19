@@ -144,14 +144,6 @@ Plone when cookie-based language selection is enabled (see the
 language tool for more information).
 
 
-To-Do
------
-
-There are some features that are missing at this point:
-
-- Integration with Plone's search user interface and collections.
-
-
 History
 =======
 
