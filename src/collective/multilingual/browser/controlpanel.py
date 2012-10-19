@@ -93,7 +93,8 @@ class ControlPanelEditForm(controlpanel.RegistryEditForm):
         return self.getDisplayLanguage(default_lang)
 
     def getDisplayLanguage(self, lang_id):
-        return self.request.locale.displayNames.languages[lang_id]
+        lang = lang_id.split('-')[0]
+        return self.request.locale.displayNames.languages[lang]
 
     def getLanguageStats(self):
         """Return list of language statistics."""
