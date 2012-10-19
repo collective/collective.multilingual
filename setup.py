@@ -37,11 +37,13 @@ setup(name='collective.multilingual',
           'setuptools',
           'Products.CMFPlone>=4.1',
           'plone.app.dexterity',
+          'plone.behavior',
       ],
       extras_require = {
           'test': [
               'plone.testing>=4.0.6',
               'plone.app.testing',
+              'lxml',
               ]
           },
       entry_points="""

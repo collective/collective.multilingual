@@ -9,7 +9,8 @@
     xmlns:z3c="http://namespaces.zope.org/z3c"
     i18n_domain="collective.multilingual">
 
-  <include package="plone.app.registry" />
+  <include package="plone.app.dexterity" />
+  <include package="plone.behavior" file="meta.zcml" />
   <include package=".browser" />
 
   <i18n:registerTranslations directory="locales" />
