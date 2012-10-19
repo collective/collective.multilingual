@@ -53,8 +53,7 @@ class TestUtility(unittest.TestCase):
         page = self.layer['portal']['front-page']
         browser.open(page.absolute_url())
         self.assertTrue(
-            'edit' in \
-            browser.getLink(id='translate_into_da').url
+            browser.getLink(id='translate_into_da').url.endswith('/forside'),
             )
         self.assertTrue(
             '++add++Item' in \

@@ -76,7 +76,7 @@ class TestMenu(unittest.TestCase):
         actions = extract_actions(items)
         self.assertTrue('translate_into_da' not in actions)
         self.assertTrue(
-            '/plone/front-page/edit' in actions['translate_into_en']
+            '/plone/front-page' in actions['translate_into_en']
         )
         self.assertTrue(
             '/plone/de/++add++Item' in actions['translate_into_de']

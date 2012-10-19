@@ -2,6 +2,7 @@
 
 import urllib
 
+from zope.component import getUtility
 from zope.i18n import translate
 
 from Products.CMFCore.utils import getToolByName
@@ -13,6 +14,7 @@ from zope.browsermenu.menu import BrowserMenu
 from zope.browsermenu.menu import BrowserSubMenuItem
 
 from plone.dexterity.interfaces import IDexterityContent
+from plone.dexterity.interfaces import IDexterityFTI
 from plone.memoize.instance import memoize
 from plone.uuid.interfaces import IUUID
 from plone.app.layout.navigation.defaultpage import isDefaultPage
@@ -81,10 +83,12 @@ def getTranslationActionItems(context, request):
         else:
             add_context = context
 
-        # If the item already exists, link to its view form.
+        # If the item already exists, link to its default view.
         if distance == 0:
             assert item is not None
-            url = "/edit"
+            fti = getUtility(IDexterityFTI, name=item.portal_type)
+            info = fti.getActionInfo('object/view')
+            url = "/" + info['url']
             title += u" ✓"
 
         # Otherwise, link to the add form.
@@ -116,7 +120,7 @@ def getTranslationActionItems(context, request):
                         action_url = site_url + url
 
         if item is not None:
-            action_url = item.absolute_url() + url
+            action_url = item.absolute_url() + url.rstrip('/')
 
         entry = {
             "title": translate(title, context=request),
