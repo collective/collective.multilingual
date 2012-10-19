@@ -29,7 +29,6 @@
           <tr tal:repeat="stat stats">
             <td>
               <em tal:omit-tag="not: repeat/stat/start"
-                  i18n:translate=""
                   tal:content="stat/language" />
             </td>
             <td tal:content="stat/count" />

@@ -118,6 +118,80 @@ msgid "Translations"
 msgstr ""
 
 #: ./browser/menu.py:156
+=======
+"Language-Name: \n"
+"Preferred-Encodings: utf-8\n"
+"Domain: collective.multilingual\n"
+
+msgid "# of Items"
+msgstr ""
+
+msgid "${fti_name} created."
+msgstr ""
+
+msgid "${lang_name} (setup required)"
+msgstr ""
+
+msgid "${language}: ${title}"
+msgstr ""
+
+msgid "Any"
+msgstr ""
+
+msgid "Content type"
+msgstr ""
+
+msgid "Content types"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Create language folder"
+msgstr ""
+
+msgid "Enables support for content in multiple languages."
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Missing"
+msgstr ""
+
+msgid "Multilingual"
+msgstr ""
+
+msgid "Ratio"
+msgstr ""
+
+msgid "Registers control panel and default settings."
+msgstr ""
+
+msgid "Select the content type to create and use as as the language root folder."
+msgstr ""
+
+msgid "Select which content types should support content in multiple content (the \"Multilingual\" behavior)."
+msgstr ""
+
+msgid "Settings and statistics for content in multiple languages."
+msgstr ""
+
+msgid "Submit this form to create a new folder for content in ${lang_name}. It will be added to your site root as \"/${lang_id}\"."
+msgstr ""
+
+msgid "The items referenced in this field are the direct translations."
+msgstr ""
+
+msgid "The site default language is ${lang_name}. However, in the table below, the statistics for this language do not include content for which a language has not been explicitly set."
+msgstr ""
+
+msgid "This folder contains content in ${lang_name}."
+msgstr ""
+
+msgid "Translations"
+msgstr ""
+
 msgid "description_language_settings"
 msgstr ""
 

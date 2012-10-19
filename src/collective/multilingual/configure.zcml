@@ -31,6 +31,10 @@
       for="plone.dexterity.interfaces.IDexterityContent"
       />
 
+  <!-- Translations -->
+
+  <i18n:registerTranslations directory="locales" />
+
   <!-- Vocabularies -->
 
   <utility
