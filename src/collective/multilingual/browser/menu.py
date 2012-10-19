@@ -63,7 +63,7 @@ def getTranslationActionItems(context, request):
         icon = showflags and lt.getFlagForLanguageCode(lang_id) or None
 
         display_lang_name = display_languages[lang_id]
-        title = display_lang_name
+        title = unicode(display_lang_name)
 
         if use_parent:
             if distance >= 0:
@@ -85,6 +85,7 @@ def getTranslationActionItems(context, request):
         if distance == 0:
             assert item is not None
             url = "/edit"
+            title += u" ✓"
 
         # Otherwise, link to the add form.
         else:
