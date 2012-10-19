@@ -36,7 +36,7 @@ msgstr "${language}: ${title}"
 
 #: ./browser/controlpanel.py:134
 msgid "Any"
-msgstr "Enhver"
+msgstr "Ethvert"
 
 #: ./browser/controlpanel.py:110
 msgid "Catalog does not have a language index."
