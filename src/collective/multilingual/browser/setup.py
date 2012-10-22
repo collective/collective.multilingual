@@ -14,6 +14,7 @@ from z3c.form import field
 
 from plone.dexterity.utils import createContentInContainer
 from plone.app.dexterity.behaviors.metadata import IBasic
+from plone.app.dexterity.behaviors.exclfromnav import IExcludeFromNavigation
 from plone.app.layout.navigation.interfaces import INavigationRoot
 
 from Products.CMFCore.utils import getToolByName
@@ -131,6 +132,11 @@ class SetupLanguageView(Form):
 
         # It's a navigation root!
         alsoProvides(folder, INavigationRoot)
+
+        # Exclude folder from navigation (if applicable)
+        adapter = IExcludeFromNavigation(folder, None)
+        if adapter is not None:
+            adapter.exclude_from_nav = True
 
         # We've modified the object; reindex.
         notify(modified(folder))
