@@ -57,6 +57,7 @@
   <adapter factory=".graph.MultilingualTranslationGraph" />
 
   <adapter factory=".catalog.translations" name="translations" />
+  <adapter factory=".catalog.language" name="language" />
 
   <!-- Events -->
 
