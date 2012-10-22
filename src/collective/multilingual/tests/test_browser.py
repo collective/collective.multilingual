@@ -1,10 +1,10 @@
 import unittest2 as unittest
 
-from ..testing import INTEGRATION_TESTING
+from ..testing import FUNCTIONAL_TESTING
 
 
 class TestUtility(unittest.TestCase):
-    layer = INTEGRATION_TESTING
+    layer = FUNCTIONAL_TESTING
 
     @property
     def testing(self):

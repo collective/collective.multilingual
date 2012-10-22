@@ -5,31 +5,44 @@ from .utils import logger
 from .interfaces import IBrowserLayer
 
 _searchResults = CatalogTool.searchResults
-_no_filter = set(('UID', 'id', 'getId'))
+_noFilter = set(('UID', 'id', 'getId'))
+_marker = object()
 
 
-def applyLanguageFilter(site, query):
-    # Accept both capitalized and lowercase language parameter.
-    language = query.pop('language', None) or query.pop('Language', None)
-    if language is not None:
-        # The string 'all' short-circuits.
-        if language != 'all':
-            query['language'] = language
-
-        return
-
-    if set(query) & _no_filter:
-        return
-
+def applyLanguageFilter(site, request, kw):
     lt = getToolByName(site, 'portal_languages', None)
     if lt is None:
         return
 
+    for query in (request, kw):
+        if query is not None:
+            if set(query) & _noFilter:
+                return
+
+            language = query.pop('Language', _marker)
+            if language == 'all':
+                return
+
+            if language is _marker:
+                language = query.get('language', _marker)
+                if language is not _marker:
+                    if language == 'all':
+                        del query['language']
+
+                    return
+            else:
+                query['language'] = language
+
+            if 'path' in query:
+                return
+
     language = lt.getPreferredLanguage()
     if language == lt.getDefaultLanguage():
-        language = (language, u"")
+        default = u""
+    else:
+        default = None
 
-    query['language'] = language
+    query['language'] = (language, default)
 
     # XXX: For path queries that target a path under a language
     # folder, and if we want to support a list of (language-neutral)
@@ -38,14 +51,9 @@ def applyLanguageFilter(site, query):
 
 
 def searchResults(self, REQUEST=None, **kw):
-    for req in (REQUEST, getattr(self, "REQUEST", None)):
-        if req is not None and IBrowserLayer.providedBy(req):
-            if REQUEST is not None and kw.get('Language', '') != 'all':
-                query = REQUEST
-            else:
-                query = kw
-
-            applyLanguageFilter(self, query)
+    for request in (REQUEST, getattr(self, "REQUEST", None)):
+        if request is not None and IBrowserLayer.providedBy(request):
+            applyLanguageFilter(self, REQUEST, kw)
             break
 
     return _searchResults(self, REQUEST, **kw)
