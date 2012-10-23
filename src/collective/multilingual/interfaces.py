@@ -62,8 +62,8 @@ class IMultilingual(Interface):
         required=False,
         value_type=schema.Choice(
             vocabulary="collective.multilingual.vocabularies.Translations",
-            )
         )
+    )
 
 
 class ISettings(Interface):
@@ -85,6 +85,9 @@ class ISettings(Interface):
                       u"language will not be applied as a filter, "
                       u"even when the setting is enabled."),
         default=set(["UID", "id", "getId", "translations"]),
+        value_type=schema.Choice(
+            vocabulary="collective.multilingual.vocabularies.Indexes",
+        ),
         required=False,
     )
 

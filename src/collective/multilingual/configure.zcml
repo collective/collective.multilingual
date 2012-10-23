@@ -52,6 +52,11 @@
       factory=".vocabularies.ContainerFTIs"
       />
 
+  <utility
+      name="collective.multilingual.vocabularies.Indexes"
+      factory=".vocabularies.Indexes"
+      />
+
   <!-- Adapters -->
 
   <adapter factory=".graph.MultilingualTranslationGraph" />

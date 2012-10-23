@@ -17,6 +17,7 @@ from plone.z3cform import layout
 from plone.app.registry.browser import controlpanel
 
 from ..interfaces import IMultilingual
+from ..interfaces import ISettings
 from ..utils import dottedName
 from ..i18n import MessageFactory as _
 
@@ -24,7 +25,7 @@ from ..i18n import MessageFactory as _
 _stat = collections.namedtuple("stat", ("language", "count", "ratio"))
 
 
-class IControlPanelSchema(Interface):
+class IControlPanelSchema(ISettings):
     ftis = schema.Set(
         title=_(u"Content types"),
         description=_(u"Select which content types should support "

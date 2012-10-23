@@ -100,3 +100,14 @@ class FTIs(object):
 
 class ContainerFTIs(FTIs):
     interface = IDexterityContainer
+
+
+class Indexes(object):
+    implements(IVocabularyFactory)
+
+    def __call__(self, context):
+        catalog = context.portal_catalog
+        return SimpleVocabulary([
+            SimpleTerm(name, unicode(name), unicode(name))
+            for name in sorted(catalog.indexes())]
+        )
