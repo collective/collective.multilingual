@@ -190,6 +190,9 @@ class TranslateSubMenuItem(BrowserSubMenuItem):
         if not IBrowserLayer.providedBy(self.request):
             return False
 
+        if INavigationRoot.providedBy(self.context):
+            return False
+
         lt = getToolByName(self.context, 'portal_languages', None)
         if lt is None:
             return False
