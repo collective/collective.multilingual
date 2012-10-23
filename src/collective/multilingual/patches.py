@@ -5,7 +5,7 @@ from .utils import logger
 from .interfaces import IBrowserLayer
 
 _searchResults = CatalogTool.searchResults
-_noFilter = set(('UID', 'id', 'getId'))
+_noFilter = set(('UID', 'id', 'getId', 'translations'))
 _marker = object()
 
 
