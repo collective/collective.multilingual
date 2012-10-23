@@ -9,7 +9,6 @@ from Acquisition import aq_base
 from .interfaces import ITranslationGraph
 from .interfaces import getLanguageIndependent
 from .utils import logger
-from .utils import getPersistentTranslationCounter
 
 
 def objectAddedEvent(context, event):
@@ -47,7 +46,7 @@ def objectAddedEvent(context, event):
         logger.warn(
             "parent %r is newer than translation %r." % (
                 uuid, str(IUUID(context)))
-            )
+        )
 
     if isDefaultPage(parent.__parent__, parent):
         container.default_page = context.getId()
