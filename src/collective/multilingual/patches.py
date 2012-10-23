@@ -1,22 +1,26 @@
 from Products.CMFPlone.CatalogTool import CatalogTool
+from Products.CMFPlone.utils import log_exc
 from Products.CMFCore.utils import getToolByName
+
+from zope.component import ComponentLookupError
+from plone.registry.interfaces import IRegistry
 
 from .utils import logger
 from .interfaces import IBrowserLayer
+from .interfaces import ISettings
 
 _searchResults = CatalogTool.searchResults
-_noFilter = set(('UID', 'id', 'getId', 'translations'))
 _marker = object()
 
 
-def applyLanguageFilter(site, request, kw):
+def applyLanguageFilter(site, blacklist, request, kw):
     lt = getToolByName(site, 'portal_languages', None)
     if lt is None:
         return
 
     for query in (request, kw):
         if query is not None:
-            if set(query) & _noFilter:
+            if set(query) & blacklist:
                 return
 
             language = query.pop('Language', _marker)
@@ -53,7 +57,20 @@ def applyLanguageFilter(site, request, kw):
 def searchResults(self, REQUEST=None, **kw):
     for request in (REQUEST, getattr(self, "REQUEST", None)):
         if request is not None and IBrowserLayer.providedBy(request):
-            applyLanguageFilter(self, REQUEST, kw)
+            site = self.portal_url.getPortalObject()
+            try:
+                registry = site.getSiteManager().getUtility(IRegistry)
+            except ComponentLookupError:
+                break
+
+            try:
+                settings = registry.forInterface(ISettings)
+            except:
+                log_exc()
+            else:
+                if settings.enable_catalog_patch:
+                    applyLanguageFilter(site, settings.no_filter, REQUEST, kw)
+
             break
 
     return _searchResults(self, REQUEST, **kw)

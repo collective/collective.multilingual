@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import itertools
-
 from zope import schema
 from zope.interface import Interface
 from zope.interface import alsoProvides
@@ -14,7 +12,7 @@ from plone.autoform.interfaces import IFormFieldProvider
 from plone.autoform import interfaces as autoform
 from plone.supermodel.utils import mergedTaggedValueList
 
-from z3c.form.interfaces import IAddForm
+from z3c.form.interfaces import IForm
 
 from .i18n import MessageFactory as _
 
@@ -24,7 +22,7 @@ def setLanguageIndependent(*fields):
         field.interface.setTaggedValue(
             LANGUAGE_INDEPENDENT_KEY, (
                 (autoform.IAutoExtensibleForm, field.__name__, True),
-                ))
+            ))
 
 
 def getLanguageIndependent(context):
@@ -47,7 +45,6 @@ def getLanguageIndependent(context):
 LANGUAGE_INDEPENDENT_KEY = u"plone.autoform.languageindependent"
 
 
-
 class IBrowserLayer(Interface):
     """Add-on browser layer.
 
@@ -67,6 +64,29 @@ class IMultilingual(Interface):
             vocabulary="collective.multilingual.vocabularies.Translations",
             )
         )
+
+
+class ISettings(Interface):
+    enable_catalog_patch = schema.Bool(
+        title=_(u"Query in current language only"),
+        description=_(u"Select this to configure the catalog to "
+                      u"return only content in the "
+                      u"current language. Note that items that do "
+                      u"not have a language setting are exempt from "
+                      u"this rule."),
+        default=True,
+        required=False,
+    )
+
+    no_filter = schema.Set(
+        title=_(u"Indexes that cancel language filtering."),
+        description=_(u"When a query contains a value for one of "
+                      u"the indexes provided here, the current "
+                      u"language will not be applied as a filter, "
+                      u"even when the setting is enabled."),
+        default=set(["UID", "id", "getId", "translations"]),
+        required=False,
+    )
 
 
 class ITranslationGraph(Interface):
@@ -121,11 +141,12 @@ alsoProvides(IMultilingual, IFormFieldProvider)
 
 IMultilingual.setTaggedValue(
     autoform.MODES_KEY, (
-        (IAddForm, 'translations', 'hidden'),
-        ))
+        (IForm, 'translations', 'hidden'),
+    )
+)
 
 setLanguageIndependent(
     IDublinCore['contributors'],
     IDublinCore['creators'],
     IDublinCore['rights'],
-    )
+)
