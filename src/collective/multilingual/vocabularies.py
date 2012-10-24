@@ -106,8 +106,15 @@ class Indexes(object):
     implements(IVocabularyFactory)
 
     def __call__(self, context):
-        catalog = context.portal_catalog
-        return SimpleVocabulary([
-            SimpleTerm(name, unicode(name), unicode(name))
-            for name in sorted(catalog.indexes())]
-        )
+        try:
+            catalog = context.portal_catalog
+        except AttributeError, exc:
+            logger.warn("%s: %r" % (exc, context))
+            terms = []
+        else:
+            terms = [
+                SimpleTerm(name, unicode(name), unicode(name))
+                for name in sorted(catalog.indexes())
+            ]
+
+        return SimpleVocabulary(terms)
