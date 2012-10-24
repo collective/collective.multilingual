@@ -136,6 +136,9 @@ class ITranslationGraph(Interface):
     def registerTranslation(parent):
         """Register context as translation for the provided parent."""
 
+    def unregisterTranslation(parent):
+        """Removes context as translation for the provided parent."""
+
     def removeTranslation():
         """Remove context from graph."""
 

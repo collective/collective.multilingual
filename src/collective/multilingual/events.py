@@ -24,21 +24,22 @@ def objectAddedEvent(context, event):
     container = event.newParent
 
     if not IPloneSiteRoot.providedBy(container):
-        language = aq_base(container).language
         if not context.language:
-            context.language = language
+            context.language = aq_base(container).language
 
     catalog = getToolByName(container, 'portal_catalog')
 
     try:
         uuid, language = context._v_multilingual_copy
     except AttributeError:
+        is_copy = False
         translations = getattr(aq_base(context), "translations", None)
         if not translations:
             return
         uuid = list(translations)[0]
         del context.translations
     else:
+        is_copy = True
         if language == getattr(aq_base(container), "language"):
             return
 
@@ -47,7 +48,7 @@ def objectAddedEvent(context, event):
         return
 
     parent = result[0].getObject()
-    if parent.creation_date >= context.creation_date:
+    if not is_copy and parent.creation_date >= context.creation_date:
         logger.warn(
             "parent %r is newer than translation %r." % (
                 uuid, str(IUUID(context)))
@@ -57,6 +58,13 @@ def objectAddedEvent(context, event):
         objectId = context.getId()
         container.setDefaultPage(objectId)
         modified(container)
+
+    # If this item is being copied into a language folder, make sure
+    # we unregister an existing translation.
+    if is_copy:
+        for language, obj in ITranslationGraph(parent).getTranslations():
+            if language == container.language:
+                ITranslationGraph(obj).unregisterTranslation(parent)
 
     # Now, append the translation to the source item's list.
     wrapped = context.__of__(container)
@@ -112,3 +120,6 @@ def objectCopiedEvent(context, event):
         IUUID(event.original), getattr(
             aq_base(event.original), "language",
         ))
+
+    # Copies never have translations!
+    context.__dict__.pop('translations', None)

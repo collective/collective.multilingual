@@ -179,6 +179,12 @@ class MultilingualTranslationGraph(object):
         parent.translations = translations
         getPersistentTranslationCounter(self.context).change(1)
 
+    def unregisterTranslation(self, parent):
+        translations = set(getattr(aq_base(parent), "translations", ()) or ())
+        translations.discard(self.uuid)
+        parent.translations = translations
+        getPersistentTranslationCounter(self.context).change(1)
+
     def removeTranslation(self):
         result = self.catalog(translations=self.uuid)
         if len(result) != 1:
