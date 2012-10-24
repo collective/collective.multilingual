@@ -145,3 +145,17 @@ msgstr "Administrér dit indholds oversættelser."
 msgid "Multilingual"
 msgstr "Flersproget"
 
+msgid "Search current language only"
+msgstr "Søg kun i det valgte sprog"
+
+msgid "Select this to configure the catalog to return only content in the current language. Note that items that do not have a language setting are exempt from this rule."
+msgstr "Når denne indstilling er valgt, returneres kun indhold i det valgte sprog ved søgning i kataloget. Bemærk, at billeder og lignende indhold, der (typisk) ikke har en sprogindstilling, altid medtages."
+
+msgid "Indexes that cancel language filtering"
+msgstr "Undtagelser"
+
+msgid "When a query contains a value for one of the indexes provided here, the current language will not be applied as a filter, even when the setting is enabled."
+msgstr "Søg blandt alt indhold, når der søges i følgende indices."
+
+
+

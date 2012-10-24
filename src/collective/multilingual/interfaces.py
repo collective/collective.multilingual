@@ -68,7 +68,7 @@ class IMultilingual(Interface):
 
 class ISettings(Interface):
     enable_catalog_patch = schema.Bool(
-        title=_(u"Query in current language only"),
+        title=_(u"Search current language only"),
         description=_(u"Select this to configure the catalog to "
                       u"return only content in the "
                       u"current language. Note that items that do "
@@ -79,7 +79,7 @@ class ISettings(Interface):
     )
 
     no_filter = schema.Set(
-        title=_(u"Indexes that cancel language filtering."),
+        title=_(u"Indexes that cancel language filtering"),
         description=_(u"When a query contains a value for one of "
                       u"the indexes provided here, the current "
                       u"language will not be applied as a filter, "
