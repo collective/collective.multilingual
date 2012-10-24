@@ -9,6 +9,7 @@ from Acquisition import aq_base
 from .interfaces import ITranslationGraph
 from .interfaces import getLanguageIndependent
 from .utils import logger
+from .utils import getPersistentTranslationCounter
 
 
 def objectAddedEvent(context, event):
@@ -70,6 +71,11 @@ def objectAddedEvent(context, event):
     wrapped = context.__of__(container)
     ITranslationGraph(wrapped).registerTranslation(parent)
     modified(parent)
+
+    # For technical reasons, we need to invalidate the counter
+    # explicitly because the item being added might not yet be
+    # catalogued.
+    getPersistentTranslationCounter(parent).change(1)
 
 
 def objectModifiedEvent(context, event):
