@@ -30,16 +30,21 @@ def objectAddedEvent(context, event):
 
     catalog = getToolByName(container, 'portal_catalog')
 
-    translations = getattr(aq_base(context), "translations", None)
-    if not translations:
-        return
+    try:
+        uuid, language = context._v_multilingual_copy
+    except AttributeError:
+        translations = getattr(aq_base(context), "translations", None)
+        if not translations:
+            return
+        uuid = list(translations)[0]
+        del context.translations
+    else:
+        if language == getattr(aq_base(container), "language"):
+            return
 
-    uuid = list(translations)[0]
     result = catalog(UID=uuid)
     if len(result) != 1:
         return
-
-    del context.translations
 
     parent = result[0].getObject()
     if parent.creation_date >= context.creation_date:
@@ -98,3 +103,12 @@ def objectRemovedEvent(context, event):
     obj = ITranslationGraph(wrapped).removeTranslation()
     if obj is not None:
         modified(obj)
+
+
+def objectCopiedEvent(context, event):
+    """Handle event that content was copied."""
+
+    context._v_multilingual_copy = (
+        IUUID(event.original), getattr(
+            aq_base(event.original), "language",
+        ))

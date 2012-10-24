@@ -84,4 +84,10 @@
       handler=".events.objectRemovedEvent"
       />
 
+  <subscriber
+      for=".interfaces.IMultilingual
+           zope.lifecycleevent.interfaces.IObjectCopiedEvent"
+      handler=".events.objectCopiedEvent"
+      />
+
 </configure>

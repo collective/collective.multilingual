@@ -62,7 +62,7 @@ class Fixture(PloneSandboxLayer):
         # in (3) above): the ``translations`` relationship is actually
         # inverted in the object added event handler.
         createContentInContainer(
-            portal, "Container", id="mappe",
+            danish, "Container", id="mappe",
             language=u"da", translations=[str(IUUID(folder1))]
             )
 
@@ -77,9 +77,9 @@ class Fixture(PloneSandboxLayer):
             )
 
         # 7. Set default pages
-        portal.default_page = 'front-page'
-        danish.default_page = 'forside'
-        folder1.default_page = 'default-item'
+        portal.setDefaultPage('front-page')
+        danish.setDefaultPage('forside')
+        folder1.setDefaultPage('default-item')
 
     def setUpLanguages(self, portal):
         # Add "Danish" and "German" as supported languages.
@@ -102,7 +102,7 @@ class Fixture(PloneSandboxLayer):
 
         content_types = [
             ("Item", "Item", (), bs),
-            ("Container", "Container", ("Item", ), bs),
+            ("Container", "Container", ("Item", "Container"), bs),
             ]
 
         # Set up Dexterity-based content types.
