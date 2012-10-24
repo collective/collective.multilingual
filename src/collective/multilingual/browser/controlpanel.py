@@ -9,11 +9,14 @@ from Acquisition import ImplicitAcquisitionWrapper
 from zope import schema
 from zope.interface import implements
 from zope.component import getSiteManager
+from zope.component import getUtility
 from zope.interface import Interface
 from zope.lifecycleevent import modified
 
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.z3cform import layout
+from plone.registry.recordsproxy import RecordsProxy
+from plone.registry.interfaces import IRegistry
 from plone.app.registry.browser import controlpanel
 
 from ..interfaces import IMultilingual
@@ -43,8 +46,12 @@ class ControlPanelAdapter(object):
 
     _behavior_name = dottedName(IMultilingual)
 
+    context = None
+    proxy = None
+
     def __init__(self, context):
-        self.context = context
+        self.__dict__['context'] = context
+        self.__dict__['proxy'] = RecordsProxy(getUtility(IRegistry), ISettings)
 
     def _get_ftis(self):
         sm = getSiteManager(self.context)
@@ -72,6 +79,12 @@ class ControlPanelAdapter(object):
             modified(fti)
 
     ftis = property(_get_ftis, _set_ftis)
+
+    def __getattr__(self, name):
+        return getattr(self.proxy, name)
+
+    def __setattr__(self, name, value):
+        setattr(self.proxy, name, value)
 
 
 class ControlPanelEditForm(controlpanel.RegistryEditForm):
