@@ -49,7 +49,8 @@ def objectAddedEvent(context, event):
         )
 
     if isDefaultPage(parent.__parent__, parent):
-        container.default_page = context.getId()
+        objectId = context.getId()
+        container.setDefaultPage(objectId)
         modified(container)
 
     # Now, append the translation to the source item's list.
