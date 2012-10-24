@@ -84,7 +84,7 @@ class ISettings(Interface):
                       u"the indexes provided here, the current "
                       u"language will not be applied as a filter, "
                       u"even when the setting is enabled."),
-        default=set(["UID", "id", "getId", "translations"]),
+        default=set(["UID", "id", "getId", "path", "translations"]),
         value_type=schema.Choice(
             vocabulary="collective.multilingual.vocabularies.Indexes",
         ),

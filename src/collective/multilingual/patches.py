@@ -37,9 +37,6 @@ def applyLanguageFilter(site, blacklist, request, kw):
             else:
                 query['language'] = language
 
-            if 'path' in query:
-                return
-
     language = lt.getPreferredLanguage()
     if language == lt.getDefaultLanguage():
         default = u""
