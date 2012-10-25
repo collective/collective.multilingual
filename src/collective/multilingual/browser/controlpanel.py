@@ -10,7 +10,6 @@ from zope import schema
 from zope.interface import implements
 from zope.component import getSiteManager
 from zope.component import getUtility
-from zope.interface import Interface
 from zope.lifecycleevent import modified
 
 from plone.dexterity.interfaces import IDexterityFTI
@@ -22,10 +21,15 @@ from plone.app.registry.browser import controlpanel
 from ..interfaces import IMultilingual
 from ..interfaces import ISettings
 from ..utils import dottedName
+from ..utils import getPersistentTranslationCounter
 from ..i18n import MessageFactory as _
 
 
 _stat = collections.namedtuple("stat", ("language", "count", "ratio"))
+
+
+def settingsModified(context, event):
+    getPersistentTranslationCounter(context.context).change(1)
 
 
 class IControlPanelSchema(ISettings):

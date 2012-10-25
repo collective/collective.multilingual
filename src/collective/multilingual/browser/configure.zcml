@@ -114,4 +114,12 @@
 
   <browser:resource name="multilingual-icon.png" image="resources/icon.png" />
 
+  <!-- Events -->
+
+  <subscriber
+      for=".controlpanel.IControlPanelSchema
+           zope.lifecycleevent.IObjectModifiedEvent"
+      handler=".controlpanel.settingsModified"
+      />
+
 </configure>

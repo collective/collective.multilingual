@@ -67,6 +67,18 @@ class IMultilingual(Interface):
 
 
 class ISettings(Interface):
+    use_nearest_translation = schema.Bool(
+        title=_(u"Contextual language selection"),
+        description=_(u"Select this option to use the nearest "
+                      u"translation of the current content. For each "
+                      u"supported language, the items in the parent list are "
+                      u"checked in reverse order for a translation. "
+                      u"If not selected, the language home page is "
+                      u"used (if available)."),
+        default=True,
+        required=False,
+    )
+
     enable_catalog_patch = schema.Bool(
         title=_(u"Search current language only"),
         description=_(u"Select this to configure the catalog to "
