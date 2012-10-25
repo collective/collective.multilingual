@@ -1,13 +1,11 @@
 from Products.CMFPlone.CatalogTool import CatalogTool
-from Products.CMFPlone.utils import log_exc
 from Products.CMFCore.utils import getToolByName
 
 from zope.component import ComponentLookupError
-from plone.registry.interfaces import IRegistry
 
 from .utils import logger
+from .utils import getSettings
 from .interfaces import IBrowserLayer
-from .interfaces import ISettings
 
 _searchResults = CatalogTool.searchResults
 _marker = object()
@@ -55,18 +53,14 @@ def searchResults(self, REQUEST=None, **kw):
     for request in (REQUEST, getattr(self, "REQUEST", None)):
         if request is not None and IBrowserLayer.providedBy(request):
             site = self.portal_url.getPortalObject()
+
             try:
-                registry = site.getSiteManager().getUtility(IRegistry)
+                settings = getSettings(site)
             except ComponentLookupError:
                 break
 
-            try:
-                settings = registry.forInterface(ISettings)
-            except:
-                log_exc()
-            else:
-                if settings.enable_catalog_patch:
-                    applyLanguageFilter(site, settings.no_filter, REQUEST, kw)
+            if settings.enable_catalog_patch:
+                applyLanguageFilter(site, settings.no_filter, REQUEST, kw)
 
             break
 
