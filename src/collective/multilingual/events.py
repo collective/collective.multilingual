@@ -1,6 +1,7 @@
 from zope.lifecycleevent import modified
 from zope.schema.interfaces import ValidationError
 from plone.uuid.interfaces import IUUID
+from plone.app.layout.navigation.defaultpage import getDefaultPage
 from plone.app.layout.navigation.defaultpage import isDefaultPage
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
@@ -24,12 +25,9 @@ def objectAddedEvent(context, event):
 
     container = event.newParent
 
-    if not IPloneSiteRoot.providedBy(container):
-        if not context.language:
-            context.language = aq_base(container).language
-
-    catalog = getToolByName(container, 'portal_catalog')
-
+    # If we're copying an item, than we can expect a volatile
+    # attribute to contain a reference to the original item. This
+    # information is turned into a translation reference below.
     try:
         uuid, language = context._v_multilingual_copy
     except AttributeError:
@@ -40,10 +38,25 @@ def objectAddedEvent(context, event):
         uuid = list(translations)[0]
         del context.translations
     else:
-        is_copy = True
+        # The Plone site root is a special case, because it always has
+        # a language setting, so the check below won't work.
+        if IPloneSiteRoot.providedBy(container):
+            return
+
+        # If we're copying the item into the same language, then we do
+        # nothing.
         if language == getattr(aq_base(container), "language"):
             return
 
+        is_copy = True
+
+    # Inherit the language of the container to which the item is
+    # added.
+    if not IPloneSiteRoot.providedBy(container):
+        if not context.language:
+            context.language = aq_base(container).language
+
+    catalog = getToolByName(container, 'portal_catalog')
     result = catalog(UID=uuid)
     if len(result) != 1:
         return
@@ -55,10 +68,13 @@ def objectAddedEvent(context, event):
                 uuid, str(IUUID(context)))
         )
 
-    if isDefaultPage(parent.__parent__, parent):
-        objectId = context.getId()
-        container.setDefaultPage(objectId)
-        modified(container)
+    # If the item being copied or translated was a default page, apply
+    # the same setting to this item, relative to its container.
+    if getDefaultPage(container) is None:
+        if isDefaultPage(parent.__parent__, parent):
+            objectId = context.getId()
+            container.setDefaultPage(objectId)
+            modified(container)
 
     # If this item is being copied into a language folder, make sure
     # we unregister an existing translation.
