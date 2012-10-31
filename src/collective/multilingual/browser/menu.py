@@ -95,6 +95,7 @@ def getTranslationActionItems(context, request):
         else:
             uuid = str(IUUID(add_context))
             portal_type = add_context.portal_type
+            title += u" +"
 
             url = "/++add++%s?%s" % (
                 portal_type,
