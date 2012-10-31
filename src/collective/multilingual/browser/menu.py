@@ -74,7 +74,7 @@ def getTranslationActionItems(context, request):
             if item is not None:
                 default_page = getDefaultPage(item)
                 if default_page is not None:
-                    item = default_page
+                    item = item[default_page]
                     distance = 0
                 else:
                     add_context = context
