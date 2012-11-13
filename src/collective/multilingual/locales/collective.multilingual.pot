@@ -230,3 +230,6 @@ msgstr ""
 
 msgid "When a query contains a value for one of the indexes provided here, the current language will not be applied as a filter, even when the setting is enabled."
 msgstr ""
+
+msgid "${title} (add...)"
+msgstr ""
