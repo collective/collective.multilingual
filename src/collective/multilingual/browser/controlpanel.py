@@ -8,6 +8,7 @@ from Acquisition import ImplicitAcquisitionWrapper
 
 from zope import schema
 from zope.interface import implements
+from zope.interface import providedBy
 from zope.component import getSiteManager
 from zope.component import getUtility
 from zope.lifecycleevent import modified
@@ -88,7 +89,10 @@ class ControlPanelAdapter(object):
         return getattr(self.proxy, name)
 
     def __setattr__(self, name, value):
-        setattr(self.proxy, name, value)
+        if providedBy(self.proxy).get(name) is None:
+            object.__setattr__(self, name, value)
+        else:
+            setattr(self.proxy, name, value)
 
 
 class ControlPanelEditForm(controlpanel.RegistryEditForm):
