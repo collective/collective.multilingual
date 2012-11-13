@@ -188,9 +188,6 @@ class TranslateSubMenuItem(BrowserSubMenuItem):
 
     @memoize
     def available(self):
-        if not IBrowserLayer.providedBy(self.request):
-            return False
-
         if INavigationRoot.providedBy(self.context):
             return False
 
