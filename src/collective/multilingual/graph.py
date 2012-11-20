@@ -178,9 +178,9 @@ class MultilingualTranslationGraph(object):
         for lang_id in langs:
             lang_items.append((lang_id, None, -1))
 
-        return cache.set([
+        return cache.set(lang_items, [
             (lang_id, str(IUUID(item)) if item is not None else None, distance)
-            for (lang_id, item, distance) in lang_items], lang_items)
+            for (lang_id, item, distance) in lang_items])
 
     @cache
     def getTranslations(self, cache):
@@ -192,9 +192,9 @@ class MultilingualTranslationGraph(object):
             ]
 
         result = list(self.iterTranslations())
-        return cache.set([
+        return cache.set(result, [
             (lang_id, str(IUUID(obj)))
-            for (lang_id, obj) in result], result)
+            for (lang_id, obj) in result])
 
     def iterTranslations(self):
         canonical = self.getCanonicalContent()
