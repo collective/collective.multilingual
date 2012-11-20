@@ -1,23 +1,21 @@
-from plone.uuid.interfaces import IUUID
-from zope.interface import implements
+import functools
 
+from zope.interface import implements
 from zope.component import adapts
 
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Acquisition import aq_base
 
-from plone.memoize import ram
+from plone.uuid.interfaces import IUUID
+from plone.memoize.ram import store_in_cache
 
 from .interfaces import IMultilingual
 from .interfaces import ITranslationGraph
 from .utils import logger
 from .utils import getPersistentTranslationCounter
 
-
-def _cachekey(method, self):
-    counter = getPersistentTranslationCounter(self.context)
-    return counter.value, self.uuid
+marker = object()
 
 
 def _recurse(catalog, uuids):
@@ -46,6 +44,37 @@ def _recurse(catalog, uuids):
         yield brain
 
 
+def cache(func):
+    adapter = store_in_cache(func)
+
+    @functools.wraps(func)
+    def decorator(self, *args, **kwargs):
+        counter = getPersistentTranslationCounter(self.context)
+        key = "%s:%d" % (self.uuid, counter.value)
+        cache = CacheProxy(adapter, key)
+        return func(self, cache, *args, **kwargs)
+
+    return decorator
+
+
+class CacheProxy(object):
+    __slots__ = "adapter", "key"
+
+    def __init__(self, adapter, key):
+        self.adapter = adapter
+        self.key = key
+
+    def get(self, default):
+        try:
+            return self.adapter[self.key]
+        except KeyError:
+            return default
+
+    def set(self, result, value):
+        self.adapter[self.key] = value
+        return result
+
+
 class MultilingualTranslationGraph(object):
     implements(ITranslationGraph)
     adapts(IMultilingual)
@@ -55,11 +84,19 @@ class MultilingualTranslationGraph(object):
         self.catalog = getToolByName(context, 'portal_catalog')
         self.uuid = str(IUUID(context))
 
-    @ram.cache(_cachekey)
-    def getCanonicalContent(self):
+    def resolve(self, uuid):
+        if uuid is not None:
+            return self.catalog(UID=uuid)[0].getObject()
+
+    @cache
+    def getCanonicalContent(self, cache):
+        uuid = cache.get(marker)
+        if uuid is not marker:
+            return self.resolve(uuid)
+
         obj = self.getParent()
         if obj is None:
-            return self.context
+            return cache.set(self.context, self.uuid)
 
         if obj is self.context:
             logger.warn("integrity error; translation cycle.")
@@ -68,22 +105,35 @@ class MultilingualTranslationGraph(object):
         if not IMultilingual.providedBy(obj):
             logger.warn("integrity error; parent not translation-aware.")
 
-        return ITranslationGraph(obj).getCanonicalContent()
+        obj = ITranslationGraph(obj).getCanonicalContent()
+        return cache.set(obj, str(IUUID(obj)))
 
-    @ram.cache(_cachekey)
-    def getParent(self):
+    @cache
+    def getParent(self, cache):
+        uuid = cache.get(marker)
+        if uuid is not marker:
+            return self.resolve(uuid)
+
         result = self.catalog(translations=self.uuid)
 
         if len(result) == 0:
-            return
+            return cache.set(None, None)
 
         if len(result) > 1:
             logger.warn("integrity error; ambiguous relationship.")
 
-        return result[0].getObject()
+        obj = result[0].getObject()
+        return cache.set(obj, str(IUUID(obj)))
 
-    @ram.cache(_cachekey)
-    def getNearestTranslations(self):
+    @cache
+    def getNearestTranslations(self, cache):
+        value = cache.get(marker)
+        if value is not marker:
+            return [
+                (lang_id, self.resolve(uuid), distance)
+                for (lang_id, uuid, distance) in value
+            ]
+
         lt = getToolByName(self.context, 'portal_languages')
         supported = lt.listSupportedLanguages()
         assert len(supported) > 1
@@ -128,11 +178,23 @@ class MultilingualTranslationGraph(object):
         for lang_id in langs:
             lang_items.append((lang_id, None, -1))
 
-        return lang_items
+        return cache.set([
+            (lang_id, str(IUUID(item)) if item is not None else None, distance)
+            for (lang_id, item, distance) in lang_items], lang_items)
 
-    @ram.cache(_cachekey)
-    def getTranslations(self):
-        return list(self.iterTranslations())
+    @cache
+    def getTranslations(self, cache):
+        value = cache.get(marker)
+        if value is not marker:
+            return [
+                (lang_id, self.resolve(uuid))
+                for (lang_id, uuid) in value
+            ]
+
+        result = list(self.iterTranslations())
+        return cache.set([
+            (lang_id, str(IUUID(obj)))
+            for (lang_id, obj) in result], result)
 
     def iterTranslations(self):
         canonical = self.getCanonicalContent()
