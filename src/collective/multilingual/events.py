@@ -33,10 +33,11 @@ def objectAddedEvent(context, event):
     except AttributeError:
         is_copy = False
         translations = getattr(aq_base(context), "translations", None)
-        if not translations:
-            return
-        uuid = list(translations)[0]
-        del context.translations
+        if translations:
+            uuid = list(translations)[0]
+            del context.translations
+        else:
+            uuid = None
     else:
         # The Plone site root is a special case, because it always has
         # a language setting, so the check below won't work.
