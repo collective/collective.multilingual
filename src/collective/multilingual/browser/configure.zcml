@@ -22,6 +22,14 @@
       permission="cmf.ManagePortal"
       />
 
+  <browser:page
+      name="set-translation-for"
+      for="..interfaces.IMultilingual"
+      class=".setup.SetTranslationForView"
+      layer="..interfaces.IBrowserLayer"
+      permission="cmf.ModifyPortalContent"
+      />
+
   <browser:viewlet
       name="collective.multilingual.supported-languages-notice"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"

@@ -143,6 +143,20 @@ def getTranslationActionItems(context, request):
 
     menu.sort(key=lambda item: unicode(item['title']))
 
+    if not graph.getTranslations():
+        menu.append({
+            "title": _(u"This is a translation of..."),
+            "description": _(u"Mark this item as the translation for "
+                             u"another content item on the site."),
+            "action": graph.context.absolute_url() + "/@@set-translation-for",
+            "selected": False,
+            "icon": None,
+            "extra": {"id": "setTranslationFor",
+                      "separator": None,
+                      "class": ""},
+            "submenu": None,
+        })
+
     return menu
 
 

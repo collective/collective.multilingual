@@ -76,8 +76,8 @@ msgid "Neutral"
 msgstr "Neutral"
 
 #: ./browser/setup.py:115
-msgid "Please correct errors"
-msgstr "Ret venligst de angivne fejl"
+msgid "Please correct errors."
+msgstr "Ret venligst de angivne fejl."
 
 #. Default: "Ratio"
 #: ./browser/templates/control-panel.pt:25
@@ -85,7 +85,7 @@ msgid "Ratio"
 msgstr "Forhold"
 
 #: ./browser/setup.py:32
-msgid "Select the content type to create and use as as the language root folder."
+msgid "Select the content type to create and use as the language root folder."
 msgstr "Vælg den indholdstype der skal oprettes og benyttes rodmappe for sproget."
 
 #: ./browser/controlpanel.py:30
@@ -159,3 +159,24 @@ msgstr "Søg blandt alt indhold, når der søges i følgende indices."
 
 msgid "${title} (add...)"
 msgstr "${title} (tilføj...)"
+
+msgid "This is a translation of..."
+msgstr "Markér som oversættelse for..."
+
+msgid "Mark this item as the translation for another content item on the site."
+msgstr "Vælg et indholdsobjekt, som dette er en oversættelse for."
+
+msgid "Item"
+msgstr "Indholdsobjekt"
+
+msgid "Select the item that is a translation."
+msgstr "Vælg det indholdsobjekt, som skal markeres som oversættelse."
+
+msgid "Use"
+msgstr "Brug"
+
+msgid "Translation registered."
+msgstr "Oversættelse valgt."
+
+msgid "n/a"
+msgstr "ikke tilgængeligt"

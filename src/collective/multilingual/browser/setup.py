@@ -11,32 +11,50 @@ from z3c.form.interfaces import NO_VALUE
 from z3c.form.interfaces import IValue
 from z3c.form import button
 from z3c.form import field
+from z3c.relationfield.schema import RelationChoice
 
 from plone.dexterity.utils import createContentInContainer
+from plone.formwidget.contenttree import ObjPathSourceBinder
 from plone.app.dexterity.behaviors.metadata import IBasic
 from plone.app.dexterity.behaviors.exclfromnav import IExcludeFromNavigation
 from plone.app.layout.navigation.interfaces import INavigationRoot
+
+from Acquisition import aq_base
 
 from Products.CMFCore.utils import getToolByName
 from Products.statusmessages.interfaces import IStatusMessage
 
 from ..i18n import MessageFactory as _
-
+from ..interfaces import ITranslationGraph
 
 language = field.Field(schema.ASCIILine(__name__="language"), mode="hidden")
 next_url = field.Field(schema.ASCIILine(__name__="next_url"), mode="hidden")
+interface_name = 'collective.multilingual.interfaces.IMultilingual'
 
 
 class IAdding(Interface):
     fti = schema.Choice(
         title=_(u"Content type"),
-        description=_(u"Select the content type to create and use as "
+        description=_(u"Select the content type to create and use "
                       u"as the language root folder."),
         required=True,
         vocabulary="collective.multilingual.vocabularies.ContainerFTIs"
     )
 
     schema.ASCIILine()
+
+
+class ISelectTranslation(Interface):
+    target = RelationChoice(
+        title=_(u"Item"),
+        description=_(u"Select the item that is a translation."),
+        required=True,
+        source=ObjPathSourceBinder(
+            navigation_tree_query={
+                'object_provides': interface_name,
+            }
+        ),
+    )
 
 
 class SetupFormDefaults(object):
@@ -113,7 +131,7 @@ class SetupLanguageView(Form):
     def handleCreate(self, action):
         data, errors = self.extractData()
         if errors:
-            self.status = _("Please correct errors")
+            self.status = _("Please correct errors.")
             return
 
         lang_id = data['language']
@@ -147,3 +165,44 @@ class SetupLanguageView(Form):
             }), "info")
 
         self.request.response.redirect(data['next_url'])
+
+
+class SetTranslationForView(Form):
+    fields = field.Fields(ISelectTranslation)
+    ignoreContext = True
+
+    def getContent(self):
+        return getToolByName(self.context, 'portal_url').getPortalObject()
+
+    @button.buttonAndHandler(_(u'Use'))
+    def handleUse(self, action):
+        data, errors = self.extractData()
+        if errors:
+            self.status = _("Please correct errors.")
+            return
+
+        obj = data['target']
+
+        if aq_base(obj).language == aq_base(self.context).language:
+            lt = getToolByName(self.context, 'portal_languages')
+
+            lang_name = self.request.locale.displayNames.languages.get(
+                aq_base(obj).language or lt.getDefaultLanguage(),
+                _(u"n/a")
+            )
+
+            self.status = _(
+                u"The referenced content item is set to the "
+                u"same language: ${lang}.", mapping={'lang': lang_name})
+
+            return
+
+        ITranslationGraph(self.context).registerTranslation(obj)
+        modified(obj)
+
+        IStatusMessage(self.request).addStatusMessage(
+            _(u"Translation registered."), "info"
+        )
+
+        next_url = self.context.absolute_url()
+        self.request.response.redirect(next_url)
