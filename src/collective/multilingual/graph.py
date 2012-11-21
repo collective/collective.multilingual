@@ -253,6 +253,6 @@ class MultilingualTranslationGraph(object):
             return
 
         obj = result[0].getObject()
-        obj.translations = obj.translations - set(self.uuid)
+        obj.translations = obj.translations - set((self.uuid, ))
         getPersistentTranslationCounter(self.context).change(1)
         return obj
