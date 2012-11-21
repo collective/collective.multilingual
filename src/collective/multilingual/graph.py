@@ -247,10 +247,25 @@ class MultilingualTranslationGraph(object):
         parent.translations = translations
         getPersistentTranslationCounter(self.context).change(1)
 
-    def removeTranslation(self):
+    def clear(self):
+        uuids = aq_base(self.context.translations)
+        if uuids:
+            items = map(self.resolve, uuids)
+            self.context.translations = set()
+            getPersistentTranslationCounter(self.context).change(1)
+            return items
+
+        return ()
+
+    def detach(self):
         result = self.catalog(translations=self.uuid)
-        if len(result) != 1:
+        if not result:
             return
+
+        if len(result) > 1:
+            logger.warn(
+                "This object is contained in multiple translation graphs!"
+            )
 
         obj = result[0].getObject()
         obj.translations = obj.translations - set((self.uuid, ))

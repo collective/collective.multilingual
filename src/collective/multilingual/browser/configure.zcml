@@ -23,6 +23,14 @@
       />
 
   <browser:page
+      name="clear-translations"
+      for="..interfaces.IMultilingual"
+      class=".setup.ClearTranslationsView"
+      layer="..interfaces.IBrowserLayer"
+      permission="cmf.ModifyPortalContent"
+      />
+
+  <browser:page
       name="set-translation-for"
       for="..interfaces.IMultilingual"
       class=".setup.SetTranslationForView"

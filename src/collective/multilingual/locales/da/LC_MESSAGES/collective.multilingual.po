@@ -180,3 +180,33 @@ msgstr "Oversættelse valgt."
 
 msgid "n/a"
 msgstr "ikke tilgængeligt"
+
+msgid "Select translation"
+msgstr "Vælg oversættelse"
+
+msgid "Clear translations"
+msgstr "Fjern referencer til oversættelser"
+
+msgid "Clear"
+msgstr "Udfør"
+
+msgid "References cleared."
+msgstr "Referencer fjernet."
+
+msgid "Clear the list of translation references."
+msgstr "Ryd listen af referencer til oversættelser."
+
+msgid "Clear..."
+msgstr "Fjern..."
+
+msgid "Please confirm that you want to clear the translation references."
+msgstr "Bekræft venligst, at listen over referencer til oversættelser skal ryddes for dette indholdsobjekt."
+
+msgid "Locate an existing content item for which the current item is a translation. If the selected item already has been translated into the current language, the other reference will be removed."
+msgstr "Anvend et eksisterende indholdsobjekt som oversættelse. Bemærk, at hvis det valgte indhold allerede er oversat til det aktuelle sprog, vil denne handling overskrive denne reference."
+
+msgid "The existing reference to \"${title}\" has been replaced."
+msgstr "Bemærk, at en reference til en tidligere oversættelse (\"${title}\") er fjernet i forbindelse med denne handling."
+
+
+

@@ -151,7 +151,10 @@ class ITranslationGraph(Interface):
     def unregisterTranslation(parent):
         """Removes context as translation for the provided parent."""
 
-    def removeTranslation():
+    def clear():
+        """Clear own translation references."""
+
+    def detach():
         """Remove context from graph."""
 
 

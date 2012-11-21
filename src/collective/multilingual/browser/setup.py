@@ -44,6 +44,10 @@ class IAdding(Interface):
     schema.ASCIILine()
 
 
+class IClearTranslations(Interface):
+    pass
+
+
 class ISelectTranslation(Interface):
     target = RelationChoice(
         title=_(u"Item"),
@@ -168,6 +172,14 @@ class SetupLanguageView(Form):
 
 
 class SetTranslationForView(Form):
+    label = _(u"Select translation")
+    description = _(
+        u"Locate an existing content item for which the current item "
+        u"is a translation. If the selected item already has been "
+        u"translated into the current language, the other reference "
+        u"will be removed."
+    )
+
     fields = field.Fields(ISelectTranslation)
     ignoreContext = True
 
@@ -182,8 +194,9 @@ class SetTranslationForView(Form):
             return
 
         obj = data['target']
+        language = aq_base(self.context).language
 
-        if aq_base(obj).language == aq_base(self.context).language:
+        if language == aq_base(obj).language:
             lt = getToolByName(self.context, 'portal_languages')
 
             lang_name = self.request.locale.displayNames.languages.get(
@@ -197,11 +210,60 @@ class SetTranslationForView(Form):
 
             return
 
+        # Check if an existing translation in the current language
+        # already exists.
+        translations = ITranslationGraph(obj).getTranslations()
+        for lang_id, item in translations:
+            if lang_id != language:
+                continue
+
+            parent = ITranslationGraph(item).detach()
+            if parent is not None:
+                title = item.Title().decode('utf-8')
+                IStatusMessage(self.request).addStatusMessage(
+                    _(u"The existing reference to \"${title}\" has "
+                      u"been replaced.", mapping={'title': title}),
+                    "info"
+                )
+
+                modified(parent)
+
+        # Register new translation.
         ITranslationGraph(self.context).registerTranslation(obj)
         modified(obj)
 
         IStatusMessage(self.request).addStatusMessage(
             _(u"Translation registered."), "info"
+        )
+
+        next_url = self.context.absolute_url()
+        self.request.response.redirect(next_url)
+
+
+class ClearTranslationsView(Form):
+    label = _(u"Clear translations")
+    description = _(
+        u"Please confirm that you want to clear the translation "
+        u"references."
+    )
+
+    fields = field.Fields(IClearTranslations)
+
+    @button.buttonAndHandler(_(u'Clear'))
+    def handleClear(self, action):
+        data, errors = self.extractData()
+        if errors:
+            self.status = _("Please correct errors.")
+            return
+
+        graph = ITranslationGraph(self.context)
+        graph.clear()
+        parent = graph.detach()
+        if parent is not None:
+            modified(parent)
+
+        IStatusMessage(self.request).addStatusMessage(
+            _(u"References cleared."), "info"
         )
 
         next_url = self.context.absolute_url()

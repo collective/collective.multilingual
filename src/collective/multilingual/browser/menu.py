@@ -143,7 +143,19 @@ def getTranslationActionItems(context, request):
 
     menu.sort(key=lambda item: unicode(item['title']))
 
-    if not graph.getTranslations():
+    if graph.getTranslations():
+        menu.append({
+            "title": _(u"Clear..."),
+            "description": _(u"Clear the list of translation references."),
+            "action": graph.context.absolute_url() + "/@@clear-translations",
+            "selected": False,
+            "icon": None,
+            "extra": {"id": "clearTranslations",
+                      "separator": None,
+                      "class": ""},
+            "submenu": None,
+        })
+    else:
         menu.append({
             "title": _(u"This is a translation of..."),
             "description": _(u"Mark this item as the translation for "

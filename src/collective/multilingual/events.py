@@ -131,7 +131,7 @@ def objectRemovedEvent(context, event):
 
     container = event.oldParent
     wrapped = context.__of__(container)
-    obj = ITranslationGraph(wrapped).removeTranslation()
+    obj = ITranslationGraph(wrapped).detach()
     if obj is not None:
         modified(obj)
 

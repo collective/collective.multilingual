@@ -11,7 +11,8 @@ def extract_langs(titles):
     been set up.
     """
 
-    return set([title.split(' ', 1)[0] for title in titles])
+    langs = [title.split(' ', 1)[0] for title in titles]
+    return set(lang for lang in langs if len(lang) <= 3)
 
 
 def extract_actions(items):
