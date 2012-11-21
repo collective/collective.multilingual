@@ -18,9 +18,6 @@ def applyLanguageFilter(site, blacklist, request, kw):
 
     for query in (request, kw):
         if query is not None:
-            if set(query) & blacklist:
-                return
-
             language = query.pop('Language', _marker)
             if language == 'all':
                 return
@@ -34,6 +31,9 @@ def applyLanguageFilter(site, blacklist, request, kw):
                     return
             else:
                 query['language'] = language
+
+            if set(query) & blacklist:
+                return
 
     language = lt.getPreferredLanguage()
     if language == lt.getDefaultLanguage():
