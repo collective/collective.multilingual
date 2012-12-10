@@ -86,7 +86,7 @@ class MultilingualTranslationGraph(object):
 
     def resolve(self, uuid):
         if uuid is not None:
-            return self.catalog(UID=uuid)[0].getObject()
+            return self.catalog.unrestrictedSearchResults(UID=uuid)[0].getObject()
 
     @cache
     def getCanonicalContent(self, cache):
