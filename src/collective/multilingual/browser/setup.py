@@ -194,13 +194,16 @@ class SetTranslationForView(Form):
             return
 
         obj = data['target']
-        language = aq_base(self.context).language
+        lt = getToolByName(self.context, 'portal_languages')
 
-        if language == aq_base(obj).language:
-            lt = getToolByName(self.context, 'portal_languages')
+        default_lang = lt.getDefaultLanguage()
 
+        language = aq_base(self.context).language or default_lang
+        obj_lang = aq_base(obj).language or default_lang
+
+        if language == obj_lang:
             lang_name = self.request.locale.displayNames.languages.get(
-                aq_base(obj).language or lt.getDefaultLanguage(),
+                obj_lang,
                 _(u"n/a")
             )
 
@@ -214,7 +217,7 @@ class SetTranslationForView(Form):
         # already exists.
         translations = ITranslationGraph(obj).getTranslations()
         for lang_id, item in translations:
-            if lang_id != language:
+            if lang_id or default_lang != language:
                 continue
 
             parent = ITranslationGraph(item).detach()
