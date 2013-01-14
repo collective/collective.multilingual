@@ -68,7 +68,6 @@ def searchResults(self, REQUEST=None, **kw):
 
             break
 
-    print REQUEST, kw
     return _searchResults(self, REQUEST, **kw)
 
 CatalogTool.searchResults = searchResults
