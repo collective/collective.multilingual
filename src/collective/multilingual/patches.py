@@ -22,6 +22,10 @@ def applyLanguageFilter(site, blacklist, request, kw):
             if language == 'all':
                 return
 
+            if 'path' in query and 'query' in query['path'] and \
+               len(query['path']) == 1 and query['path']['query'] is '':
+                    query.pop('path')
+
             if language is _marker:
                 language = query.get('language', _marker)
                 if language is not _marker:
@@ -64,6 +68,7 @@ def searchResults(self, REQUEST=None, **kw):
 
             break
 
+    print REQUEST, kw
     return _searchResults(self, REQUEST, **kw)
 
 CatalogTool.searchResults = searchResults
