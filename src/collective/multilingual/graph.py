@@ -107,6 +107,11 @@ class MultilingualTranslationGraph(object):
 
         if not IMultilingual.providedBy(obj):
             logger.warn("integrity error; parent not translation-aware.")
+            return
+
+        if not ITranslationGraph.providedBy(obj):
+            logger.warn("Object is not providing translation graph.")
+            return
 
         obj = ITranslationGraph(obj).getCanonicalContent()
         return cache.set(obj, str(IUUID(obj)))
