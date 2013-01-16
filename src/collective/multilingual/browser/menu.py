@@ -36,13 +36,11 @@ def getTranslationActionItems(context, request):
     # default page. In this case, we compute the nearest translations
     # of the parent folder, unless the parent is a navigation or site
     # root.
-    use_parent = is_default_page and not INavigationRoot.providedBy(parent)
+    use_parent = False
 
-    if use_parent:
-        graph = ITranslationGraph(parent)
-    else:
-        graph = ITranslationGraph(context)
-
+    graph = ITranslationGraph(context)
+    parent_graph = ITranslationGraph(parent)
+    
     current_lang = getattr(aq_base(context), "language", "")
     lt = getToolByName(context, 'portal_languages')
     pt = getToolByName(context, name="portal_url")
@@ -52,7 +50,10 @@ def getTranslationActionItems(context, request):
     site = pt.getPortalObject()
     site_url = site.absolute_url()
 
-    lang_items = graph.getNearestTranslations()
+    if use_parent:
+        lang_items = parent_graph.getNearestTranslations()
+    else:
+        lang_items = graph.getNearestTranslations()
 
     menu = []
     for lang_id, item, distance in lang_items:
