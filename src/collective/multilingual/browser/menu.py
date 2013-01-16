@@ -39,7 +39,6 @@ def getTranslationActionItems(context, request):
     use_parent = False
 
     graph = ITranslationGraph(context)
-    parent_graph = ITranslationGraph(parent)
     
     current_lang = getattr(aq_base(context), "language", "")
     lt = getToolByName(context, 'portal_languages')
@@ -51,7 +50,7 @@ def getTranslationActionItems(context, request):
     site_url = site.absolute_url()
 
     if use_parent:
-        lang_items = parent_graph.getNearestTranslations()
+        lang_items = ITranslationGraph(parent).getNearestTranslations()
     else:
         lang_items = graph.getNearestTranslations()
 
