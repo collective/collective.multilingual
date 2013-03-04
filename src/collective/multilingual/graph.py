@@ -174,6 +174,8 @@ class MultilingualTranslationGraph(object):
                 translations = ITranslationGraph(folder).getTranslations()
 
                 for lang_id, item in translations:
+                    if not lang_id:
+                        lang_id = default_lang
                     try:
                         langs.remove(lang_id)
                     except KeyError:

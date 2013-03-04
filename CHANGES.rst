@@ -3,6 +3,10 @@ Changes
 
 In next release ...
 
+- Fix issue where translating _into_ the default language would ignore translated parents
+  and place the new translation in the site root.
+  [tmog]
+
 - Always show "Clear..." and "This is a translation of..." menu items for context, even if context is a default page.
   [tmog]
 
