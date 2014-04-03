@@ -15,14 +15,6 @@
 
   <i18n:registerTranslations directory="locales" />
   
-  <genericsetup:registerProfile
-      name="default"
-      title="Multilingual"
-      directory="profile"
-      description="Registers control panel and default settings."
-      provides="Products.GenericSetup.interfaces.EXTENSION"
-      />
-
   <plone:behavior
       title="Multilingual"
       description="Enables support for content in multiple languages."
@@ -88,6 +80,21 @@
       for=".interfaces.IMultilingual
            zope.lifecycleevent.interfaces.IObjectCopiedEvent"
       handler=".events.objectCopiedEvent"
+      />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Multilingual"
+      directory="profiles/default"
+      description="Registers control panel and default settings."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="Multilingual: uninstallation"
+      directory="profiles/uninstall"
+      description="Uninstalls collective.multilingual."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
 </configure>

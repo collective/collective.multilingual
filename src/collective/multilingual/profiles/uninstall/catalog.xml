@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<object name="portal_catalog">
+  <index remove="True" name="language" meta_type="FieldIndex" />
+  <index remove="True" name="translations" meta_type="KeywordIndex" />
+  <column remove="True" value="language" />
+  <column remove="True" value="translations" />
+</object>
