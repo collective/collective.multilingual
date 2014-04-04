@@ -127,7 +127,9 @@ class SetupLanguageView(Form):
                  mapping={'lang_id': lang_id, 'lang_name': lang_name})
 
     def getLanguage(self):
-        lang_id = self.request.form['language']
+        lang_id = self.request.form.get(
+            'language', self.request.form.get('form.widgets.language')
+        )
         lang_name = self.request.locale.displayNames.languages[lang_id]
         return lang_id, lang_name
 
@@ -149,7 +151,7 @@ class SetupLanguageView(Form):
         # above, because we don't want to have the id chosen based on
         # the title.
         folder.title = data['title']
-        folder.description = data['description']
+        folder.description = data.get('description')
         folder.language = lang_id
 
         # It's a navigation root!
