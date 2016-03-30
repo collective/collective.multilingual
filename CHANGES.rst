@@ -1,6 +1,9 @@
 Changes
 =======
 
+1.0 (2016-03-30)
+----------------
+
 - Fix issue where a widget that was updated multiple times would
   result in a circular translation reference.
   [malthe]
