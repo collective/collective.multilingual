@@ -87,12 +87,17 @@ class AddingLanguageIndependentValue(ValueBase):
 
 
 class LanguageIndependentWidgetLabel(ValueBase):
+    msgid = u"${label} \u2022"
+
     def get(self):
         label = self.widget.label
 
-        if isLanguageIndependent(self.field) and isinstance(label, Message):
+        if (isLanguageIndependent(self.field) and
+            isinstance(label, Message) and
+            label != self.msgid
+        ):
             label = MessageFactory(label.domain)(
-                u"${label} •", mapping={'label': label}
+                self.msgid, mapping={'label': label}
             )
 
         return label

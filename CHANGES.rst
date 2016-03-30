@@ -1,7 +1,9 @@
 Changes
 =======
 
-In next release ...
+- Fix issue where a widget that was updated multiple times would
+  result in a circular translation reference.
+  [malthe]
 
 - Fix issue where translating _into_ the default language would ignore translated parents
   and place the new translation in the site root.
