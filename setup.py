@@ -14,7 +14,7 @@ def read(*pathnames):
         # Doesn't work under tox/pip
         return u""
 
-version = '1.0'
+version = '1.0.1'
 
 setup(name='collective.multilingual',
       version=version,
