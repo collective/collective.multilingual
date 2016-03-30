@@ -7,8 +7,12 @@ from setuptools import setup, find_packages
 
 
 def read(*pathnames):
-    return open(os.path.join(os.path.dirname(__file__), *pathnames)).read().\
-           decode('utf-8')
+    try:
+        return open(os.path.join(os.path.dirname(__file__), *pathnames)).read().\
+            decode('utf-8')
+    except:
+        # Doesn't work under tox/pip
+        return u""
 
 version = '1.0'
 
