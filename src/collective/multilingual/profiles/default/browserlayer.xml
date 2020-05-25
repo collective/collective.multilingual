@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <layers>
-  <layer name="collective.multilingual"
-         interface="collective.multilingual.interfaces.IBrowserLayer"
-         />
+  <layer interface="collective.multilingual.interfaces.IBrowserLayer"
+         name="collective.multilingual"
+  />
 </layers>
