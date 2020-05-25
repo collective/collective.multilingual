@@ -1,16 +1,15 @@
-from zope.lifecycleevent import modified
-from zope.schema.interfaces import ValidationError
-from plone.uuid.interfaces import IUUID
+from .interfaces import getLanguageIndependent
+from .interfaces import ITranslationGraph
+from .utils import getPersistentTranslationCounter
+from .utils import logger
+from Acquisition import aq_base
 from plone.app.layout.navigation.defaultpage import getDefaultPage
 from plone.app.layout.navigation.defaultpage import isDefaultPage
+from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-from Acquisition import aq_base
-
-from .interfaces import ITranslationGraph
-from .interfaces import getLanguageIndependent
-from .utils import logger
-from .utils import getPersistentTranslationCounter
+from zope.lifecycleevent import modified
+from zope.schema.interfaces import ValidationError
 
 
 def objectAddedEvent(context, event):
@@ -57,7 +56,7 @@ def objectAddedEvent(context, event):
         if not context.language:
             context.language = aq_base(container).language
 
-    catalog = getToolByName(container, 'portal_catalog')
+    catalog = getToolByName(container, "portal_catalog")
     result = catalog(UID=uuid)
     if len(result) != 1:
         return
@@ -65,8 +64,7 @@ def objectAddedEvent(context, event):
     parent = result[0].getObject()
     if not is_copy and parent.creation_date >= context.creation_date:
         logger.warn(
-            "parent %r is newer than translation %r." % (
-                uuid, str(IUUID(context)))
+            "parent %r is newer than translation %r." % (uuid, str(IUUID(context)))
         )
 
     # If the item being copied or translated was a default page, apply
@@ -140,9 +138,9 @@ def objectCopiedEvent(context, event):
     """Handle event that content was copied."""
 
     context._v_multilingual_copy = (
-        IUUID(event.original), getattr(
-            aq_base(event.original), "language",
-        ))
+        IUUID(event.original),
+        getattr(aq_base(event.original), "language",),
+    )
 
     # Copies never have translations!
-    context.__dict__.pop('translations', None)
+    context.__dict__.pop("translations", None)

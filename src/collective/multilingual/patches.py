@@ -1,40 +1,43 @@
-from Products.CMFPlone.CatalogTool import CatalogTool
+from .interfaces import IBrowserLayer
+from .utils import getSettings
+from .utils import logger
 from Products.CMFCore.utils import getToolByName
-
+from Products.CMFPlone.CatalogTool import CatalogTool
 from zope.component import ComponentLookupError
 
-from .utils import logger
-from .utils import getSettings
-from .interfaces import IBrowserLayer
 
 _searchResults = CatalogTool.searchResults
 _marker = object()
 
 
 def applyLanguageFilter(site, blacklist, request, kw):
-    lt = getToolByName(site, 'portal_languages', None)
+    lt = getToolByName(site, "portal_languages", None)
     if lt is None:
         return
 
     for query in (request, kw):
         if query is not None:
-            language = query.pop('Language', _marker)
-            if language == 'all':
+            language = query.pop("Language", _marker)
+            if language == "all":
                 return
 
-            if 'path' in query and 'query' in query['path'] and \
-               len(query['path']) == 1 and query['path']['query'] is '':
-                    query.pop('path')
+            if (
+                "path" in query
+                and "query" in query["path"]
+                and len(query["path"]) == 1
+                and query["path"]["query"] is ""
+            ):
+                query.pop("path")
 
             if language is _marker:
-                language = query.get('language', _marker)
+                language = query.get("language", _marker)
                 if language is not _marker:
-                    if language == 'all':
-                        del query['language']
+                    if language == "all":
+                        del query["language"]
 
                     return
             else:
-                query['language'] = language
+                query["language"] = language
 
             if set(query) & blacklist:
                 return
@@ -45,7 +48,7 @@ def applyLanguageFilter(site, blacklist, request, kw):
     else:
         default = None
 
-    query['language'] = (language, default)
+    query["language"] = (language, default)
 
     # XXX: For path queries that target a path under a language
     # folder, and if we want to support a list of (language-neutral)
@@ -69,6 +72,7 @@ def searchResults(self, REQUEST=None, **kw):
             break
 
     return _searchResults(self, REQUEST, **kw)
+
 
 CatalogTool.searchResults = searchResults
 CatalogTool.__call__ = searchResults

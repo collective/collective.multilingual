@@ -1,6 +1,6 @@
-import unittest2 as unittest
-
 from ..testing import FUNCTIONAL_TESTING
+
+import unittest2 as unittest
 
 
 class TestCatalogPatch(unittest.TestCase):
@@ -12,21 +12,18 @@ class TestCatalogPatch(unittest.TestCase):
 
         # Manually set up the browser layer, see:
         # https://dev.plone.org/ticket/11673
-        notify(BeforeTraverseEvent(
-            self.layer['portal'],
-            self.layer['request']
-        ))
+        notify(BeforeTraverseEvent(self.layer["portal"], self.layer["request"]))
 
     @property
     def catalog(self):
-        return self.layer['portal'].portal_catalog
+        return self.layer["portal"].portal_catalog
 
     def setLanguage(self, language_id):
         from Products.CMFPlone.interfaces import IPloneSiteRoot
         from Products.PloneLanguageTool.interfaces import INegotiateLanguage
         from collective.multilingual.interfaces import IBrowserLayer
 
-        site = self.layer['portal']
+        site = self.layer["portal"]
         assert language_id != "en"
 
         class NegotiateLanguage(object):
@@ -36,20 +33,18 @@ class TestCatalogPatch(unittest.TestCase):
                 self.language_list = ["en", language_id]
 
         site.getSiteManager().registerAdapter(
-            NegotiateLanguage,
-            (IPloneSiteRoot, IBrowserLayer),
-            INegotiateLanguage
+            NegotiateLanguage, (IPloneSiteRoot, IBrowserLayer), INegotiateLanguage
         )
 
         from Products.CMFCore.utils import getToolByName
-        lt = getToolByName(site, 'portal_languages', None)
+
+        lt = getToolByName(site, "portal_languages", None)
 
         if lt is not None:
             lt.setLanguageBindings()
 
         self.assertEqual(
-            language_id,
-            lt.getPreferredLanguage(),
+            language_id, lt.getPreferredLanguage(),
         )
 
     def test_callable(self):
@@ -58,7 +53,7 @@ class TestCatalogPatch(unittest.TestCase):
         self.assertEqual(languages, set([""]))
 
     def test_all(self):
-        result = self.catalog(language='all')
+        result = self.catalog(language="all")
         languages = set(brain.language for brain in result)
         self.assertEqual(languages, set(["", "da", "de"]))
 
@@ -77,9 +72,9 @@ class TestCatalogPatch(unittest.TestCase):
 
     def test_explicit_search_for_languageless(self):
         self.setLanguage("da")
-        page = self.layer['portal']['da']['forside']
+        page = self.layer["portal"]["da"]["forside"]
         page._p_activate()
-        language = page.__dict__.pop('language', None)
+        language = page.__dict__.pop("language", None)
         self.assertEqual(language, "da")
         page.reindexObject()
         result = self.catalog(language=None)
@@ -89,9 +84,9 @@ class TestCatalogPatch(unittest.TestCase):
 
     def test_default_search_finds_languageless(self):
         self.setLanguage("da")
-        page = self.layer['portal']['da']['forside']
+        page = self.layer["portal"]["da"]["forside"]
         page._p_activate()
-        language = page.__dict__.pop('language', None)
+        language = page.__dict__.pop("language", None)
         self.assertEqual(language, "da")
         page.reindexObject()
         result = self.catalog()
@@ -101,7 +96,7 @@ class TestCatalogPatch(unittest.TestCase):
 
     def test_path_search_cancels_current_language(self):
         self.setLanguage("da")
-        result = self.catalog(path={'query': '/plone/folder'})
+        result = self.catalog(path={"query": "/plone/folder"})
         self.assertTrue(result)
         languages = set(brain.language for brain in result)
         self.assertEqual(languages, set([""]))

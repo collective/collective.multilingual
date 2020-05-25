@@ -1,19 +1,17 @@
-from zope.component import getSiteManager
-from zope.interface import implements
-from zope.schema.interfaces import IVocabularyFactory
-from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
-
-from plone.dexterity.interfaces import IDexterityFTI
-from plone.dexterity.interfaces import IDexterityContainer
-from plone.dexterity.interfaces import IDexterityContent
-from plone.dexterity.utils import resolveDottedName
-
-from Products.CMFCore.utils import getToolByName
-from Acquisition import aq_base
-
 from .i18n import MessageFactory as _
 from .interfaces import IMultilingual
 from .utils import logger
+from Acquisition import aq_base
+from plone.dexterity.interfaces import IDexterityContainer
+from plone.dexterity.interfaces import IDexterityContent
+from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.utils import resolveDottedName
+from Products.CMFCore.utils import getToolByName
+from zope.component import getSiteManager
+from zope.interface import implements
+from zope.schema.interfaces import IVocabularyFactory
+from zope.schema.vocabulary import SimpleTerm
+from zope.schema.vocabulary import SimpleVocabulary
 
 
 class DexterityContentVocabulary(SimpleVocabulary):
@@ -44,7 +42,7 @@ class Translations(object):
 
     def __call__(self, context):
         terms = []
-        catalog = getToolByName(context, 'portal_catalog')
+        catalog = getToolByName(context, "portal_catalog")
         display_languages = context.REQUEST.locale.displayNames.languages
 
         def uuidToObject(uuid):
@@ -61,11 +59,13 @@ class Translations(object):
             return SimpleTerm(
                 uuid,
                 uuid,
-                _(u"${language}: ${title}", mapping={
-                    'language': display_languages.get(
-                        obj.language, _(u"Neutral")),
-                    'title': obj.title,
-                }),
+                _(
+                    u"${language}: ${title}",
+                    mapping={
+                        "language": display_languages.get(obj.language, _(u"Neutral")),
+                        "title": obj.title,
+                    },
+                ),
             )
 
         if IMultilingual.providedBy(context):

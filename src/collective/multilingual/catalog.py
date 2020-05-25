@@ -1,6 +1,7 @@
+from .interfaces import IMultilingual
 from Acquisition import aq_base
 from plone.indexer import indexer
-from .interfaces import IMultilingual
+
 
 @indexer(IMultilingual)
 def translations(obj):
