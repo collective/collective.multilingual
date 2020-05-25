@@ -12,6 +12,7 @@ from zope.interface import implements
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
+import six
 
 
 class DexterityContentVocabulary(SimpleVocabulary):
@@ -108,12 +109,12 @@ class Indexes(object):
     def __call__(self, context):
         try:
             catalog = context.portal_catalog
-        except AttributeError, exc:
+        except AttributeError as exc:
             logger.warn("%s: %r" % (exc, context))
             terms = []
         else:
             terms = [
-                SimpleTerm(name, unicode(name), unicode(name))
+                SimpleTerm(name, six.text_type(name), six.text_type(name))
                 for name in sorted(catalog.indexes())
             ]
 

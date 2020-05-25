@@ -11,6 +11,7 @@ from zope.component import adapts
 from zope.interface import implements
 
 import functools
+from six.moves import map
 
 
 marker = object()
@@ -258,7 +259,7 @@ class MultilingualTranslationGraph(object):
     def clear(self):
         uuids = aq_base(self.context.translations)
         if uuids:
-            items = map(self.resolve, uuids)
+            items = list(map(self.resolve, uuids))
             self.context.translations = set()
             getPersistentTranslationCounter(self.context).change(1)
             return items

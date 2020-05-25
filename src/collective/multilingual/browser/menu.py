@@ -18,7 +18,8 @@ from zope.browsermenu.menu import BrowserSubMenuItem
 from zope.component import getUtility
 from zope.i18n import translate
 
-import urllib
+import six.moves.urllib.request, six.moves.urllib.parse, six.moves.urllib.error
+import six
 
 
 def getTranslationActionItems(context, request):
@@ -60,7 +61,7 @@ def getTranslationActionItems(context, request):
         icon = showflags and lt.getFlagForLanguageCode(lang_id) or None
 
         display_lang_name = display_languages[lang_id]
-        title = unicode(display_lang_name)
+        title = six.text_type(display_lang_name)
 
         if use_parent:
             if distance >= 0:
@@ -94,7 +95,7 @@ def getTranslationActionItems(context, request):
 
             url = "/++add++%s?%s" % (
                 portal_type,
-                urllib.urlencode({"translation": uuid, "language": lang_id,}),
+                six.moves.urllib.parse.urlencode({"translation": uuid, "language": lang_id,}),
             )
 
             if item is None:
@@ -112,7 +113,7 @@ def getTranslationActionItems(context, request):
                         url = site_url + "/" + lang_id + url
                         url = "/@@setup-language?language=%s&next_url=%s" % (
                             lang_id,
-                            urllib.quote_plus(url),
+                            six.moves.urllib.parse.quote_plus(url),
                         )
 
                         action_url = site_url + url
@@ -142,7 +143,7 @@ def getTranslationActionItems(context, request):
 
         menu.append(entry)
 
-    menu.sort(key=lambda item: unicode(item["title"]))
+    menu.sort(key=lambda item: six.text_type(item["title"]))
 
     if graph.getTranslations():
         menu.append(
