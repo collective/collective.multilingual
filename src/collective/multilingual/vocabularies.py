@@ -8,7 +8,7 @@ from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import resolveDottedName
 from Products.CMFCore.utils import getToolByName
 from zope.component import getSiteManager
-from zope.interface import implements
+from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
@@ -38,9 +38,8 @@ class DexterityContentVocabulary(SimpleVocabulary):
             return self.createTerm(token)
 
 
+@implementer(IVocabularyFactory)
 class Translations(object):
-    implements(IVocabularyFactory)
-
     def __call__(self, context):
         terms = []
         catalog = getToolByName(context, "portal_catalog")
@@ -82,8 +81,8 @@ class Translations(object):
         return DexterityContentVocabulary(createTerm, terms)
 
 
+@implementer(IVocabularyFactory)
 class FTIs(object):
-    implements(IVocabularyFactory)
     interface = IDexterityContent
 
     def __call__(self, context):
@@ -103,9 +102,8 @@ class ContainerFTIs(FTIs):
     interface = IDexterityContainer
 
 
+@implementer(IVocabularyFactory)
 class Indexes(object):
-    implements(IVocabularyFactory)
-
     def __call__(self, context):
         try:
             catalog = context.portal_catalog

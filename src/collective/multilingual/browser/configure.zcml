@@ -5,6 +5,8 @@
     xmlns:z3c="http://namespaces.zope.org/z3c"
     >
 
+  <includeOverrides file="configure-overrides.zcml" />
+
   <!-- Views -->
 
   <browser:page
@@ -47,7 +49,7 @@
       class=".notices.SupportedLanguagesNoticeViewlet"
       template="templates/languages-notice.pt"
       layer="..interfaces.IBrowserLayer"
-      view="plone.app.controlpanel.interfaces.IPloneControlPanelView"
+      view="Products.CMFPlone.interfaces.controlpanel.IPloneControlPanelView"
       />
 
   <browser:viewlet
@@ -70,12 +72,6 @@
       />
 
   <!-- Action menu -->
-
-  <browser:menu
-      id="plone_contentmenu_multilingual"
-      title="Translate menu - contains translation-related actions"
-      class=".menu.TranslateMenu"
-      />
 
   <adapter
       name="plone.contentmenu.multilingual"

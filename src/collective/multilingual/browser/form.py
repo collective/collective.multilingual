@@ -11,7 +11,6 @@ from zope.component import queryMultiAdapter
 from zope.i18n import Message
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implementer
-from zope.interface import implements
 
 
 @implementer(IValue)
@@ -31,9 +30,8 @@ def isLanguageIndependent(field):
         return False
 
 
+@implementer(IValue)
 class ValueBase(object):
-    implements(IValue)
-
     def __init__(self, context, request, form, field, widget):
         self.context = context
         self.request = request

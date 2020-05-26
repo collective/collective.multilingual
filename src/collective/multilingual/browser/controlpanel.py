@@ -15,7 +15,7 @@ from Products.statusmessages.interfaces import IStatusMessage
 from zope import schema
 from zope.component import getSiteManager
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import providedBy
 from zope.lifecycleevent import modified
 
@@ -45,8 +45,8 @@ class IControlPanelSchema(ISettings):
     )
 
 
+@implementer(IControlPanelSchema)
 class ControlPanelAdapter(object):
-    implements(IControlPanelSchema)
 
     _behavior_name = dottedName(IMultilingual)
 

@@ -7,8 +7,8 @@ from plone.memoize.ram import store_in_cache
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-from zope.component import adapts
-from zope.interface import implements
+from zope.component import adapter
+from zope.interface import implementer
 
 import functools
 from six.moves import map
@@ -74,10 +74,9 @@ class CacheProxy(object):
         return result
 
 
+@implementer(ITranslationGraph)
+@adapter(IMultilingual)
 class MultilingualTranslationGraph(object):
-    implements(ITranslationGraph)
-    adapts(IMultilingual)
-
     def __init__(self, context):
         self.context = context
         self.catalog = getToolByName(context, "portal_catalog")

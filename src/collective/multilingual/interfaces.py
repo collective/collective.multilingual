@@ -10,8 +10,8 @@ from plone.supermodel.utils import mergedTaggedValueList
 from z3c.form.interfaces import IForm
 from zope import schema
 from zope.component import getUtility
-from zope.interface import alsoProvides
 from zope.interface import Interface
+from zope.interface import provider
 
 
 def setLanguageIndependent(*fields):
@@ -49,6 +49,7 @@ class IBrowserLayer(Interface):
     """
 
 
+@provider(IFormFieldProvider)
 class IMultilingual(Interface):
     """An item that supports translation into other languages."""
 
@@ -161,8 +162,6 @@ class ITranslationGraph(Interface):
     def detach():
         """Remove context from graph."""
 
-
-alsoProvides(IMultilingual, IFormFieldProvider)
 
 IMultilingual.setTaggedValue(autoform.MODES_KEY, ((IForm, "translations", "hidden"),))
 

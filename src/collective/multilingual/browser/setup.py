@@ -18,7 +18,7 @@ from zope import schema
 from zope.event import notify
 from zope.i18n import translate
 from zope.interface import alsoProvides
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import Interface
 from zope.lifecycleevent import modified
 
@@ -57,9 +57,8 @@ class ISelectTranslation(Interface):
     )
 
 
+@implementer(IValue)
 class SetupFormDefaults(object):
-    implements(IValue)
-
     def __init__(self, *args):
         self.get = lambda args=args: self.get_default(*args)
 
