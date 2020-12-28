@@ -52,7 +52,9 @@ class ISelectTranslation(Interface):
         description=_(u"Select the item that is a translation."),
         required=True,
         source=ObjPathSourceBinder(
-            navigation_tree_query={"object_provides": interface_name,}
+            navigation_tree_query={
+                "object_provides": interface_name,
+            }
         ),
     )
 
@@ -140,7 +142,11 @@ class SetupLanguageView(Form):
         lang_id = data["language"]
         fti = data["fti"]
 
-        folder = createContentInContainer(self.context, fti.getId(), id=lang_id,)
+        folder = createContentInContainer(
+            self.context,
+            fti.getId(),
+            id=lang_id,
+        )
 
         # It's important that we don't set the title in the call
         # above, because we don't want to have the id chosen based on

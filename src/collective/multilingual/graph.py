@@ -7,11 +7,11 @@ from plone.memoize.ram import store_in_cache
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
+from six.moves import map
 from zope.component import adapter
 from zope.interface import implementer
 
 import functools
-from six.moves import map
 
 
 marker = object()

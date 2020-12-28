@@ -166,5 +166,7 @@ class ITranslationGraph(Interface):
 IMultilingual.setTaggedValue(autoform.MODES_KEY, ((IForm, "translations", "hidden"),))
 
 setLanguageIndependent(
-    IDublinCore["contributors"], IDublinCore["creators"], IDublinCore["rights"],
+    IDublinCore["contributors"],
+    IDublinCore["creators"],
+    IDublinCore["rights"],
 )

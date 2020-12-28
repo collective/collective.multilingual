@@ -23,7 +23,12 @@ setup(
     name="collective.multilingual",
     version=version,
     description="Create, relate and manage content in multiple languages in Plone!",
-    long_description="\n".join([read("README.rst"), read("CHANGES.rst"),]),
+    long_description="\n".join(
+        [
+            read("README.rst"),
+            read("CHANGES.rst"),
+        ]
+    ),
     classifiers=[
         "Framework :: Plone",
         "Framework :: Zope2",
@@ -45,7 +50,13 @@ setup(
         "plone.behavior",
         "plone.formwidget.contenttree",
     ],
-    extras_require={"test": ["plone.testing>=4.0.6", "plone.app.testing", "lxml",]},
+    extras_require={
+        "test": [
+            "plone.testing>=4.0.6",
+            "plone.app.testing",
+            "lxml",
+        ]
+    },
     entry_points="""
       [z3c.autoinclude.plugin]
       target = plone

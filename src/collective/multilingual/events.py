@@ -139,7 +139,10 @@ def objectCopiedEvent(context, event):
 
     context._v_multilingual_copy = (
         IUUID(event.original),
-        getattr(aq_base(event.original), "language",),
+        getattr(
+            aq_base(event.original),
+            "language",
+        ),
     )
 
     # Copies never have translations!

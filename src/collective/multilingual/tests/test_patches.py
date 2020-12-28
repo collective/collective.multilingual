@@ -44,7 +44,8 @@ class TestCatalogPatch(unittest.TestCase):
             lt.setLanguageBindings()
 
         self.assertEqual(
-            language_id, lt.getPreferredLanguage(),
+            language_id,
+            lt.getPreferredLanguage(),
         )
 
     def test_callable(self):

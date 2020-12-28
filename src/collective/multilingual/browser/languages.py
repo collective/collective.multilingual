@@ -23,7 +23,12 @@ class LanguageSelector(selector.LanguageSelector):
         default_lang = lt.getDefaultLanguage()
 
         entries = self.languages()
-        mappings = [site, {default_lang: site,}]
+        mappings = [
+            site,
+            {
+                default_lang: site,
+            },
+        ]
 
         try:
             settings = getSettings(site)

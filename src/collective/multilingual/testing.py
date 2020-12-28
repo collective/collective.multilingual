@@ -34,9 +34,19 @@ class Fixture(PloneSandboxLayer):
         )
 
         # 2. Create language folders /da and /de:
-        danish = createContentInContainer(portal, "Container", id="da", language="da",)
+        danish = createContentInContainer(
+            portal,
+            "Container",
+            id="da",
+            language="da",
+        )
 
-        german = createContentInContainer(portal, "Container", id="de", language="de",)
+        german = createContentInContainer(
+            portal,
+            "Container",
+            id="de",
+            language="de",
+        )
 
         from plone.app.layout.navigation.interfaces import INavigationRoot
         from zope.interface import alsoProvides
@@ -55,7 +65,11 @@ class Fixture(PloneSandboxLayer):
 
         # 4. Create a folder in neutral language and a translation in
         #    Danish.
-        folder1 = createContentInContainer(portal, "Container", id="folder",)
+        folder1 = createContentInContainer(
+            portal,
+            "Container",
+            id="folder",
+        )
 
         # Note that there's something potentially confusing here (and
         # in (3) above): the ``translations`` relationship is actually
@@ -70,12 +84,16 @@ class Fixture(PloneSandboxLayer):
 
         # 5. Create a nested item (untranslated).
         createContentInContainer(
-            folder1, "Item", id="item",
+            folder1,
+            "Item",
+            id="item",
         )
 
         # 6. Create a nested, default item (untranslated).
         createContentInContainer(
-            folder1, "Item", id="default-item",
+            folder1,
+            "Item",
+            id="default-item",
         )
 
         # 7. Set default pages

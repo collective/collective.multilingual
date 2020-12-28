@@ -18,8 +18,10 @@ from zope.browsermenu.menu import BrowserSubMenuItem
 from zope.component import getUtility
 from zope.i18n import translate
 
-import six.moves.urllib.request, six.moves.urllib.parse, six.moves.urllib.error
 import six
+import six.moves.urllib.error
+import six.moves.urllib.parse
+import six.moves.urllib.request
 
 
 def getTranslationActionItems(context, request):
@@ -95,7 +97,12 @@ def getTranslationActionItems(context, request):
 
             url = "/++add++%s?%s" % (
                 portal_type,
-                six.moves.urllib.parse.urlencode({"translation": uuid, "language": lang_id,}),
+                six.moves.urllib.parse.urlencode(
+                    {
+                        "translation": uuid,
+                        "language": lang_id,
+                    }
+                ),
             )
 
             if item is None:
