@@ -1,13 +1,9 @@
 <?xml version="1.0"?>
 <object name="portal_catalog">
-  <index meta_type="FieldIndex"
-         name="language"
-  >
+  <index name="language" meta_type="FieldIndex">
     <indexed_attr value="language" />
   </index>
-  <index meta_type="KeywordIndex"
-         name="translations"
-  >
+  <index name="translations" meta_type="KeywordIndex">
     <indexed_attr value="translations" />
   </index>
   <column value="language" />
