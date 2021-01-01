@@ -11,6 +11,7 @@
                     current python: selected and 'currentLanguage ' or '';"
         tal:attributes="class string:${current}${codeclass}">
         <a href=""
+           tal:omit-tag="current"
            tal:define="flag lang/flag|nothing;
                        name lang/native|lang/name;
                        showflag python:showFlags and flag;

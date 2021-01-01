@@ -7,6 +7,9 @@ Changes
 - Plone 5.2 and Python 3 support.
   [thet]
 
+- Language switcher: Do not render a link for the current language.
+  [thet]
+
 
 1.0.1 (2016-03-30)
 ------------------
