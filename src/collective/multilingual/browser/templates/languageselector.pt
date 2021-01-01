@@ -15,7 +15,7 @@
                        name lang/native|lang/name;
                        showflag python:showFlags and flag;
                        url lang/url|here_url"
-           tal:attributes="href string:${url}/switchLanguage?set_language=${code};
+           tal:attributes="href string:${url}/?set_language=${code};
                            title name"
             ><tal:flag condition="showflag">
                 <img width="14"
