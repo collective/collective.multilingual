@@ -5,8 +5,6 @@
     xmlns:z3c="http://namespaces.zope.org/z3c"
     >
 
-  <includeOverrides file="configure-overrides.zcml" />
-
   <!-- Views -->
 
   <browser:page
@@ -72,6 +70,12 @@
       />
 
   <!-- Action menu -->
+
+  <browser:menu
+      id="collective_multilingual__plone_contentmenu_multilingual"
+      title="Translate menu - contains translation-related actions"
+      class=".menu.TranslateMenu"
+      />
 
   <adapter
       name="plone.contentmenu.multilingual"
