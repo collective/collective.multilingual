@@ -41,7 +41,7 @@ def getTranslationActionItems(context, request):
     current_lang = getattr(aq_base(context), "language", "")
     lt = getToolByName(context, "portal_languages")
     pt = getToolByName(context, name="portal_url")
-    showflags = lt.showFlags()
+    showflags = lt.showFlags() if callable(lt.showFlags) else lt.showFlags
     default_lang = lt.getDefaultLanguage()
     display_languages = request.locale.displayNames.languages
     site = pt.getPortalObject()
