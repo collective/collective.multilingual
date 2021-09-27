@@ -9,7 +9,7 @@
 
   <browser:page
       name="setup-language"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
       permission="cmf.ModifyPortalContent"
       class=".setup.SetupLanguageView"
       layer="..interfaces.IBrowserLayer"
@@ -87,7 +87,7 @@
 
   <adapter
       name="default"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot
+      for="plone.app.layout.navigation.interfaces.INavigationRoot
            ..interfaces.IBrowserLayer
            .setup.SetupLanguageView
            zope.schema.interfaces.IField

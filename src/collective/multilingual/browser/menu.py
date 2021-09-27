@@ -16,6 +16,7 @@ from Products.CMFPlone.defaultpage import get_default_page
 from zope.browsermenu.menu import BrowserMenu
 from zope.browsermenu.menu import BrowserSubMenuItem
 from zope.component import getUtility
+from zope.component.hooks import getSite
 from zope.i18n import translate
 
 import six
@@ -40,11 +41,10 @@ def getTranslationActionItems(context, request):
 
     current_lang = getattr(aq_base(context), "language", "")
     lt = getToolByName(context, "portal_languages")
-    pt = getToolByName(context, name="portal_url")
     showflags = lt.showFlags() if callable(lt.showFlags) else lt.showFlags
     default_lang = lt.getDefaultLanguage()
     display_languages = request.locale.displayNames.languages
-    site = pt.getPortalObject()
+    site = getSite()
     site_url = site.absolute_url()
 
     if use_parent:
