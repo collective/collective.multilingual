@@ -4,8 +4,6 @@ from ..i18n import MessageFactory as _
 from ..interfaces import IBrowserLayer
 from ..interfaces import ITranslationGraph
 from Acquisition import aq_base
-from plone.app.layout.navigation.defaultpage import getDefaultPage
-from plone.app.layout.navigation.defaultpage import isDefaultPage
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.interfaces import IDexterityFTI
@@ -13,6 +11,8 @@ from plone.memoize.instance import memoize
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.defaultpage import check_default_page_via_view
+from Products.CMFPlone.defaultpage import get_default_page
 from zope.browsermenu.menu import BrowserMenu
 from zope.browsermenu.menu import BrowserSubMenuItem
 from zope.component import getUtility
@@ -28,7 +28,7 @@ def getTranslationActionItems(context, request):
     """Return action menu items for 'Translate' menu."""
 
     parent = context.__parent__
-    is_default_page = isDefaultPage(parent, context)
+    is_default_page = check_default_page_via_view(context, request)
 
     # There is a special case here which is when the ``context`` is a
     # default page. In this case, we compute the nearest translations
@@ -70,7 +70,7 @@ def getTranslationActionItems(context, request):
                 distance += 1
 
             if item is not None:
-                default_page = getDefaultPage(item)
+                default_page = get_default_page(item)
                 if default_page is not None:
                     item = item[default_page]
                     distance = 0

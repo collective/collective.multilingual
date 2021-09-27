@@ -3,11 +3,12 @@ from .interfaces import ITranslationGraph
 from .utils import getPersistentTranslationCounter
 from .utils import logger
 from Acquisition import aq_base
-from plone.app.layout.navigation.defaultpage import getDefaultPage
-from plone.app.layout.navigation.defaultpage import isDefaultPage
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.defaultpage import check_default_page_via_view
+from Products.CMFPlone.defaultpage import get_default_page
 from Products.CMFPlone.interfaces import IPloneSiteRoot
+from zope.globalrequest import getRequest
 from zope.lifecycleevent import modified
 from zope.schema.interfaces import ValidationError
 
@@ -69,8 +70,8 @@ def objectAddedEvent(context, event):
 
     # If the item being copied or translated was a default page, apply
     # the same setting to this item, relative to its container.
-    if getDefaultPage(container) is None:
-        if isDefaultPage(parent.__parent__, parent):
+    if get_default_page(container) is None:
+        if check_default_page_via_view(parent, getRequest()):
             objectId = context.getId()
             container.setDefaultPage(objectId)
             modified(container)
