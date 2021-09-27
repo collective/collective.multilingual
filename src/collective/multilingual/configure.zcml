@@ -20,10 +20,10 @@
   <i18n:registerTranslations directory="locales" />
 
   <plone:behavior
-      title="Multilingual"
+      name="collective.multilingual"
+      title="Multilingual (collective.multilingual)"
       description="Enables support for content in multiple languages."
       provides=".interfaces.IMultilingual"
-      for="plone.dexterity.interfaces.IDexterityContent"
       marker=".interfaces.IMultilingual"
       />
 
