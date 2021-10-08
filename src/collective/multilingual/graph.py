@@ -149,7 +149,7 @@ class MultilingualTranslationGraph(object):
         distance = 0
 
         # 1. Objects appearing in the present translation graph.
-        for lang_id, item in self.getTranslations():
+        for lang_id, item in self.getTranslations(include_context=True):
             if not lang_id:
                 lang_id = default_lang
 
@@ -194,17 +194,17 @@ class MultilingualTranslationGraph(object):
         )
 
     @cache
-    def getTranslations(self, cache):
+    def getTranslations(self, cache, include_context=False):
         value = cache.get(marker)
         if value is not marker:
             return [(lang_id, self.resolve(uuid)) for (lang_id, uuid) in value]
 
-        result = list(self.iterTranslations())
+        result = list(self.iterTranslations(include_context))
         return cache.set(
             result, [(lang_id, str(IUUID(obj))) for (lang_id, obj) in result]
         )
 
-    def iterTranslations(self):
+    def iterTranslations(self, include_context=False):
         canonical = self.getCanonicalContent()
         if canonical is None:
             return
@@ -220,8 +220,9 @@ class MultilingualTranslationGraph(object):
         if uuids:
             uuids = set(uuids)
 
-            # 3. Don't include the context of the graph.
-            uuids.discard(self.uuid)
+            if not include_context:
+                # 3. Don't include the context of the graph.
+                uuids.discard(self.uuid)
 
             for brain in _recurse(self.catalog, list(uuids)):
                 obj = brain.getObject()
