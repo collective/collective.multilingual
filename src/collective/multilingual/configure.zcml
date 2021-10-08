@@ -15,7 +15,6 @@
       package="plone.behavior"
       file="meta.zcml"
       />
-  <include package="plone.formwidget.contenttree" />
   <include package=".browser" />
 
   <i18n:registerTranslations directory="locales" />

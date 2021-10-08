@@ -5,7 +5,6 @@ from plone.app.dexterity.behaviors.exclfromnav import IExcludeFromNavigation
 from plone.app.dexterity.behaviors.metadata import IBasic
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.dexterity.utils import createContentInContainer
-from plone.formwidget.contenttree import ObjPathSourceBinder
 from Products.CMFCore.utils import getToolByName
 from Products.statusmessages.interfaces import IStatusMessage
 from z3c.form import button
@@ -25,7 +24,6 @@ from zope.lifecycleevent import modified
 
 language = field.Field(schema.ASCIILine(__name__="language"), mode="hidden")
 next_url = field.Field(schema.ASCIILine(__name__="next_url"), mode="hidden")
-interface_name = "collective.multilingual.interfaces.IMultilingual"
 
 
 class IAdding(Interface):
@@ -51,11 +49,7 @@ class ISelectTranslation(Interface):
         title=_(u"Item"),
         description=_(u"Select the item that is a translation."),
         required=True,
-        source=ObjPathSourceBinder(
-            navigation_tree_query={
-                "object_provides": interface_name,
-            }
-        ),
+        vocabulary="plone.app.vocabularies.Catalog",
     )
 
 

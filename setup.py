@@ -44,7 +44,6 @@ setup(
         "Products.CMFPlone>=5.2",
         "plone.app.dexterity",
         "plone.behavior",
-        "plone.formwidget.contenttree",
     ],
     extras_require={
         "test": [
