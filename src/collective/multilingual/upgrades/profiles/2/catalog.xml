@@ -6,9 +6,4 @@
   </index>
   <column value="Language" />
 
-  <index name="translations" meta_type="KeywordIndex">
-    <indexed_attr value="translations" />
-  </index>
-  <column value="translations" />
-
 </object>

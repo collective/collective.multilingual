@@ -16,6 +16,7 @@
       file="meta.zcml"
       />
   <include package=".browser" />
+  <include package=".upgrades"/>
 
   <i18n:registerTranslations directory="locales" />
 
@@ -59,11 +60,11 @@
 
   <adapter
       name="translations"
-      factory=".catalog.translations"
+      factory=".catalog.TranslationsIndexer"
       />
   <adapter
-      name="language"
-      factory=".catalog.language"
+      name="Language"
+      factory=".catalog.LanguageIndexer"
       />
 
   <!-- Events -->
@@ -99,12 +100,18 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       directory="profiles/default"
       />
+
   <genericsetup:registerProfile
       name="uninstall"
       title="Multilingual: uninstallation"
       description="Uninstalls collective.multilingual."
       provides="Products.GenericSetup.interfaces.EXTENSION"
       directory="profiles/uninstall"
+      />
+
+  <utility
+      factory=".setuphandlers.HiddenProfiles"
+      name="collective.multilingual-hiddenprofiles"
       />
 
 </configure>

@@ -4,12 +4,12 @@ from plone.indexer import indexer
 
 
 @indexer(IMultilingual)
-def translations(obj):
+def TranslationsIndexer(obj):
     unwrapped = aq_base(obj)
     return set(getattr(unwrapped, "translations", ()) or ())
 
 
 @indexer(IMultilingual)
-def language(obj):
+def LanguageIndexer(obj):
     unwrapped = aq_base(obj)
     return getattr(unwrapped, "language", None)
