@@ -125,7 +125,7 @@ class ControlPanelEditForm(controlpanel.RegistryEditForm):
 
         catalog = getToolByName(self.context, "portal_catalog")
 
-        if "language" not in catalog.indexes():
+        if "Language" not in catalog.indexes():
             IStatusMessage(self.request).addStatusMessage(
                 _("Catalog does not have a language index."), type="warning"
             )
