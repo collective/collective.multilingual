@@ -1,8 +1,6 @@
-from ..i18n import MessageFactory as _
-from ..interfaces import IMultilingual
-from ..interfaces import ISettings
-from ..utils import dottedName
-from ..utils import getPersistentTranslationCounter
+import collections
+import itertools
+
 from Acquisition import ImplicitAcquisitionWrapper
 from plone.app.registry.browser import controlpanel
 from plone.dexterity.interfaces import IDexterityFTI
@@ -13,15 +11,13 @@ from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
 from zope import schema
-from zope.component import getSiteManager
-from zope.component import getUtility
-from zope.interface import implementer
-from zope.interface import providedBy
+from zope.component import getSiteManager, getUtility
+from zope.interface import implementer, providedBy
 from zope.lifecycleevent import modified
 
-import collections
-import itertools
-
+from ..i18n import MessageFactory as _
+from ..interfaces import IMultilingual, ISettings
+from ..utils import dottedName, getPersistentTranslationCounter
 
 _stat = collections.namedtuple("stat", ("language", "count", "ratio"))
 
@@ -32,11 +28,11 @@ def settingsModified(context, event):
 
 class IControlPanelSchema(ISettings):
     ftis = schema.Set(
-        title=_(u"Content types"),
+        title=_("Content types"),
         description=_(
-            u"Select which content types should support "
-            u"content in multiple content (the "
-            u'"Multilingual" behavior).'
+            "Select which content types should support "
+            "content in multiple content (the "
+            '"Multilingual" behavior).'
         ),
         required=False,
         value_type=schema.Choice(
@@ -98,10 +94,10 @@ class ControlPanelEditForm(controlpanel.RegistryEditForm):
     schema = IControlPanelSchema
     template = ViewPageTemplateFile("templates/control-panel.pt")
 
-    label = _(u"Settings for content in multiple languages")
+    label = _("Settings for content in multiple languages")
     description = _(
-        u'Add or remove the "Multilingual" behavior from your '
-        u"content types, and view translation statistics."
+        'Add or remove the "Multilingual" behavior from your '
+        "content types, and view translation statistics."
     )
 
     def getContent(self):
@@ -131,7 +127,7 @@ class ControlPanelEditForm(controlpanel.RegistryEditForm):
 
         if "language" not in catalog.indexes():
             IStatusMessage(self.request).addStatusMessage(
-                _(u"Catalog does not have a language index."), type="warning"
+                _("Catalog does not have a language index."), type="warning"
             )
             return ()
 
@@ -142,7 +138,7 @@ class ControlPanelEditForm(controlpanel.RegistryEditForm):
 
             stats.append((lang_id, count))
 
-        total += len(catalog(language=u""))
+        total += len(catalog(language=""))
 
         # An edge-case: there is no content :-).
         if not total:
@@ -158,7 +154,7 @@ class ControlPanelEditForm(controlpanel.RegistryEditForm):
         ]
 
         result.sort()
-        result.insert(0, (_(u"Any"), total, u"100%"))
+        result.insert(0, (_("Any"), total, "100%"))
 
         return tuple(itertools.starmap(_stat, result))
 
