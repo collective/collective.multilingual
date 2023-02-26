@@ -51,7 +51,7 @@
 
   <utility
       name="collective.multilingual.vocabularies.Indexes"
-      factory=".vocabularies.Indexes"
+      component=".vocabularies.IndexesFactory"
       />
 
   <!-- Adapters -->

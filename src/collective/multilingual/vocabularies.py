@@ -1,19 +1,21 @@
+import six
+from Acquisition import aq_base
+from plone import api
+from plone.dexterity.interfaces import (
+    IDexterityContainer,
+    IDexterityContent,
+    IDexterityFTI,
+)
+from plone.dexterity.utils import resolveDottedName
+from Products.CMFCore.utils import getToolByName
+from zope.component import getAllUtilitiesRegisteredFor, getSiteManager
+from zope.interface import implementer
+from zope.schema.interfaces import IVocabularyFactory
+from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
+
 from .i18n import MessageFactory as _
 from .interfaces import IMultilingual
 from .utils import logger
-from Acquisition import aq_base
-from plone.dexterity.interfaces import IDexterityContainer
-from plone.dexterity.interfaces import IDexterityContent
-from plone.dexterity.interfaces import IDexterityFTI
-from plone.dexterity.utils import resolveDottedName
-from Products.CMFCore.utils import getToolByName
-from zope.component import getSiteManager
-from zope.interface import implementer
-from zope.schema.interfaces import IVocabularyFactory
-from zope.schema.vocabulary import SimpleTerm
-from zope.schema.vocabulary import SimpleVocabulary
-
-import six
 
 
 class DexterityContentVocabulary(SimpleVocabulary):
@@ -43,8 +45,10 @@ class DexterityContentVocabulary(SimpleVocabulary):
 class Translations(object):
     def __call__(self, context):
         terms = []
-        catalog = getToolByName(context, "portal_catalog")
-        display_languages = context.REQUEST.locale.displayNames.languages
+        portal = api.portal.get()
+        request = portal.REQUEST
+        catalog = api.portal.get_tool("portal_catalog")
+        display_languages = request.locale.displayNames.languages
 
         def uuidToObject(uuid):
             if uuid:
@@ -61,9 +65,9 @@ class Translations(object):
                 uuid,
                 uuid,
                 _(
-                    u"${language}: ${title}",
+                    "${language}: ${title}",
                     mapping={
-                        "language": display_languages.get(obj.language, _(u"Neutral")),
+                        "language": display_languages.get(obj.language, _("Neutral")),
                         "title": obj.title,
                     },
                 ),
@@ -75,7 +79,7 @@ class Translations(object):
                     term = createTerm(uuid)
                 except LookupError:
                     logger.warn("can't resolve reference: %r." % uuid)
-                    term = SimpleTerm(uuid, uuid, _(u"Missing"))
+                    term = SimpleTerm(uuid, uuid, _("Missing"))
 
                 terms.append(term)
 
@@ -87,8 +91,7 @@ class FTIs(object):
     interface = IDexterityContent
 
     def __call__(self, context):
-        sm = getSiteManager(context)
-        ftis = sm.getAllUtilitiesRegisteredFor(IDexterityFTI)
+        ftis = getAllUtilitiesRegisteredFor(IDexterityFTI)
 
         terms = []
         for fti in ftis:
@@ -106,15 +109,13 @@ class ContainerFTIs(FTIs):
 @implementer(IVocabularyFactory)
 class Indexes(object):
     def __call__(self, context):
-        try:
-            catalog = context.portal_catalog
-        except AttributeError as exc:
-            logger.warn("%s: %r" % (exc, context))
-            terms = []
-        else:
-            terms = [
-                SimpleTerm(name, six.text_type(name), six.text_type(name))
-                for name in sorted(catalog.indexes())
-            ]
-
+        portal = api.portal.get()
+        catalog = api.portal.get_tool("portal_catalog")
+        terms = [
+            SimpleTerm(name, six.text_type(name), six.text_type(name))
+            for name in sorted(catalog.indexes())
+        ]
         return SimpleVocabulary(terms)
+
+
+IndexesFactory = Indexes()
