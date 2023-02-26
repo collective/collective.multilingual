@@ -8,7 +8,7 @@
     provides="Products.GenericSetup.interfaces.EXTENSION" />
 
   <gs:upgradeSteps source="1.0"
-    destination="2"
+    destination="1001"
     profile="collective.multilingual:default">
 
     <gs:upgradeDepends
