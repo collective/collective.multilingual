@@ -21,12 +21,8 @@ def applyLanguageFilter(site, blacklist, request, kw):
             if language == "all":
                 return
 
-            if (
-                "path" in query
-                and "query" in query["path"]
-                and len(query["path"]) == 1
-                and query["path"]["query"] == ""
-            ):
+            path_query = query.get("path")
+            if isinstance(path_query, dict) and path_query == {"query": ""}:
                 query.pop("path")
 
             if language is _marker:
