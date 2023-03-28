@@ -5,6 +5,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.CatalogTool import CatalogTool
 from zope.component import ComponentLookupError
 
+LANGUAGE_INDEX_NAME = "Language"
 
 _searchResults = CatalogTool.searchResults
 _marker = object()
@@ -17,7 +18,7 @@ def applyLanguageFilter(site, blacklist, request, kw):
 
     for query in (request, kw):
         if query is not None:
-            language = query.pop("Language", _marker)
+            language = query.pop(LANGUAGE_INDEX_NAME, _marker)
             if language == "all":
                 return
 
@@ -26,14 +27,14 @@ def applyLanguageFilter(site, blacklist, request, kw):
                 query.pop("path")
 
             if language is _marker:
-                language = query.get("language", _marker)
+                language = query.get(LANGUAGE_INDEX_NAME, _marker)
                 if language is not _marker:
                     if language == "all":
-                        del query["language"]
+                        del query[LANGUAGE_INDEX_NAME]
 
                     return
             else:
-                query["language"] = language
+                query[LANGUAGE_INDEX_NAME] = language
 
             if set(query) & blacklist:
                 return
@@ -44,7 +45,7 @@ def applyLanguageFilter(site, blacklist, request, kw):
     else:
         default = None
 
-    query["language"] = (language, default)
+    query[LANGUAGE_INDEX_NAME] = (language, default)
 
     # XXX: For path queries that target a path under a language
     # folder, and if we want to support a list of (language-neutral)
