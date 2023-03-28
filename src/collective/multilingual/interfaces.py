@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from .i18n import MessageFactory as _
 from plone.app.dexterity.behaviors.metadata import IDublinCore
 from plone.autoform import interfaces as autoform
 from plone.autoform.interfaces import IFormFieldProvider
@@ -10,8 +9,9 @@ from plone.supermodel.utils import mergedTaggedValueList
 from z3c.form.interfaces import IForm
 from zope import schema
 from zope.component import getUtility
-from zope.interface import Interface
-from zope.interface import provider
+from zope.interface import Interface, provider
+
+from .i18n import MessageFactory as _
 
 
 def setLanguageIndependent(*fields):
@@ -39,7 +39,7 @@ def getLanguageIndependent(context):
     return fields
 
 
-LANGUAGE_INDEPENDENT_KEY = u"plone.autoform.languageindependent"
+LANGUAGE_INDEPENDENT_KEY = "plone.autoform.languageindependent"
 
 
 class IBrowserLayer(Interface):
@@ -54,9 +54,9 @@ class IMultilingual(Interface):
     """An item that supports translation into other languages."""
 
     translations = schema.Set(
-        title=_(u"Translations"),
+        title=_("Translations"),
         description=_(
-            u"The items referenced in this field " u"are the direct translations."
+            "The items referenced in this field " "are the direct translations."
         ),
         required=False,
         value_type=schema.Choice(
@@ -67,39 +67,39 @@ class IMultilingual(Interface):
 
 class ISettings(Interface):
     use_nearest_translation = schema.Bool(
-        title=_(u"Contextual language selection"),
+        title=_("Contextual language selection"),
         description=_(
-            u"Select this option to use the nearest "
-            u"translation of the current content. For each "
-            u"supported language, the items in the parent list are "
-            u"checked in reverse order for a translation. "
-            u"If not selected, the language home page is "
-            u"used (if available)."
+            "Select this option to use the nearest "
+            "translation of the current content. For each "
+            "supported language, the items in the parent list are "
+            "checked in reverse order for a translation. "
+            "If not selected, the language home page is "
+            "used (if available)."
         ),
         default=True,
         required=False,
     )
 
     enable_catalog_patch = schema.Bool(
-        title=_(u"Search current language only"),
+        title=_("Search current language only"),
         description=_(
-            u"Select this to configure the catalog to "
-            u"return only content in the "
-            u"current language. Note that items that do "
-            u"not have a language setting are exempt from "
-            u"this rule."
+            "Select this to configure the catalog to "
+            "return only content in the "
+            "current language. Note that items that do "
+            "not have a language setting are exempt from "
+            "this rule."
         ),
         default=True,
         required=False,
     )
 
     no_filter = schema.Set(
-        title=_(u"Indexes that cancel language filtering"),
+        title=_("Indexes that cancel language filtering"),
         description=_(
-            u"When a query contains a value for one of "
-            u"the indexes provided here, the current "
-            u"language will not be applied as a filter, "
-            u"even when the setting is enabled."
+            "When a query contains a value for one of "
+            "the indexes provided here, the current "
+            "language will not be applied as a filter, "
+            "even when the setting is enabled."
         ),
         default=set(["UID", "id", "getId", "path", "translations"]),
         value_type=schema.Choice(
