@@ -62,7 +62,9 @@ def getTranslationActionItems(context, request):
 
         icon = showflags and lt.getFlagForLanguageCode(lang_id) or None
 
-        display_lang_name = display_languages[lang_id]
+        display_lang_name = display_languages.get(lang_id)
+        if display_lang_name is None:
+            continue
         title = six.text_type(display_lang_name)
 
         if use_parent:
