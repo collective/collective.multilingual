@@ -123,7 +123,11 @@ class SetupLanguageView(Form):
         lang_id = self.request.form.get(
             "language", self.request.form.get("form.widgets.language")
         )
-        lang_name = self.request.locale.displayNames.languages[lang_id]
+        lang_name = self.request.locale.displayNames.languages.get(lang_id)
+        if lang_name is None:
+            lt = getToolByName(self.context, "portal_languages")
+            available_languages = dict(lt.listAvailableLanguages())
+            lang_name = available_languages[lang_id]
         return lang_id, lang_name
 
     @button.buttonAndHandler(_(u"Create"))

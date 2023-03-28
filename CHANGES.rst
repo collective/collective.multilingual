@@ -4,6 +4,10 @@ Changes
 2.0 (unreleased)
 ----------------
 
+- Fall back to English language names when the localized list offered
+  by Zope does not provide one.
+  [malthe]
+
 - Plone 5.2 and Python 3 support.
   [thet]
 

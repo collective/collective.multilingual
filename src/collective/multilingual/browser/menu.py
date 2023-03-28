@@ -44,6 +44,8 @@ def getTranslationActionItems(context, request):
     showflags = lt.showFlags() if callable(lt.showFlags) else lt.showFlags
     default_lang = lt.getDefaultLanguage()
     display_languages = request.locale.displayNames.languages
+    available_languages = dict(lt.listAvailableLanguages())
+
     site = getSite()
     site_url = site.absolute_url()
 
@@ -64,7 +66,8 @@ def getTranslationActionItems(context, request):
 
         display_lang_name = display_languages.get(lang_id)
         if display_lang_name is None:
-            continue
+            display_lang_name = available_languages[lang_id]
+
         title = six.text_type(display_lang_name)
 
         if use_parent:
