@@ -25,7 +25,7 @@ def applyLanguageFilter(site, blacklist, request, kw):
                 "path" in query
                 and "query" in query["path"]
                 and len(query["path"]) == 1
-                and query["path"]["query"] is ""
+                and query["path"]["query"] == ""
             ):
                 query.pop("path")
 
