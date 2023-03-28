@@ -10,6 +10,7 @@ from z3c.form.interfaces import IForm
 from zope import schema
 from zope.component import getUtility
 from zope.interface import Interface, provider
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 from .i18n import MessageFactory as _
 
@@ -42,7 +43,7 @@ def getLanguageIndependent(context):
 LANGUAGE_INDEPENDENT_KEY = "plone.autoform.languageindependent"
 
 
-class IBrowserLayer(Interface):
+class IBrowserLayer(IDefaultBrowserLayer):
     """Add-on browser layer.
 
     This layer enables the user interface components.
