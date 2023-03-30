@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 from ..i18n import MessageFactory as _
 from ..interfaces import IBrowserLayer
 from ..interfaces import ITranslationGraph
@@ -23,6 +25,8 @@ import six
 import six.moves.urllib.error
 import six.moves.urllib.parse
 import six.moves.urllib.request
+
+LOGGER = logging.getLogger(__name__)
 
 
 def getTranslationActionItems(context, request):
