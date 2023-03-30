@@ -1,15 +1,13 @@
-import logging
-
+from .interfaces import ISettings
+from BTrees.Length import Length
+from plone.registry.interfaces import IRegistry
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import log_exc
 from zope.annotation.interfaces import IAnnotations
 from zope.component import ComponentLookupError
 
-from plone.registry.interfaces import IRegistry
+import logging
 
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import log_exc
-from BTrees.Length import Length
-
-from .interfaces import ISettings
 
 logger = logging.getLogger("multilingual")
 
@@ -21,7 +19,7 @@ def dottedName(interface):
 
 
 def getObjectByuuid(context, uuid):
-    catalog = getToolByName(context, 'portal_catalog')
+    catalog = getToolByName(context, "portal_catalog")
     result = catalog(UID=uuid)
 
     if len(result) != 1:
@@ -31,7 +29,7 @@ def getObjectByuuid(context, uuid):
 
 
 def getPersistentTranslationCounter(self):
-    site = getToolByName(self, 'portal_url').getPortalObject()
+    site = getToolByName(self, "portal_url").getPortalObject()
     annotations = IAnnotations(site)
     try:
         length = annotations[COUNTER]

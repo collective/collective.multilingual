@@ -2,133 +2,137 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:z3c="http://namespaces.zope.org/z3c">
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    >
 
   <!-- Views -->
 
   <browser:page
       name="setup-language"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot"
+      permission="cmf.ModifyPortalContent"
       class=".setup.SetupLanguageView"
       layer="..interfaces.IBrowserLayer"
-      permission="cmf.ModifyPortalContent"
       />
 
   <browser:page
       name="multilingual-settings"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
       class=".controlpanel.ControlPanel"
       layer="..interfaces.IBrowserLayer"
-      permission="cmf.ManagePortal"
       />
 
   <browser:page
       name="clear-translations"
       for="..interfaces.IMultilingual"
+      permission="cmf.ModifyPortalContent"
       class=".setup.ClearTranslationsView"
       layer="..interfaces.IBrowserLayer"
-      permission="cmf.ModifyPortalContent"
       />
 
   <browser:page
       name="set-translation-for"
       for="..interfaces.IMultilingual"
+      permission="cmf.ModifyPortalContent"
       class=".setup.SetTranslationForView"
       layer="..interfaces.IBrowserLayer"
-      permission="cmf.ModifyPortalContent"
       />
 
   <browser:viewlet
       name="collective.multilingual.supported-languages-notice"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      view="plone.app.controlpanel.interfaces.IPloneControlPanelView"
       manager="plone.app.layout.viewlets.interfaces.IAboveContent"
+      permission="cmf.ManagePortal"
       class=".notices.SupportedLanguagesNoticeViewlet"
       template="templates/languages-notice.pt"
       layer="..interfaces.IBrowserLayer"
-      permission="cmf.ManagePortal"
+      view="Products.CMFPlone.interfaces.controlpanel.IPloneControlPanelView"
       />
 
   <browser:viewlet
       name="collective.multilingual.parent-not-translated-notice"
       for="plone.dexterity.interfaces.IDexterityContainer"
       manager="plone.app.layout.viewlets.interfaces.IAboveContent"
+      permission="cmf.ManagePortal"
       class=".notices.ParentNotTranslatedNoticeViewlet"
       template="templates/parent-not-translated-notice.pt"
       layer="..interfaces.IBrowserLayer"
-      permission="cmf.ManagePortal"
       />
 
   <browser:viewlet
       name="plone.app.i18n.locales.languageselector"
-      layer="collective.multilingual.interfaces.IBrowserLayer"
       manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+      permission="zope2.View"
       class="collective.multilingual.browser.languages.LanguageSelector"
       template="templates/languageselector.pt"
-      permission="zope2.View"
+      layer="collective.multilingual.interfaces.IBrowserLayer"
       />
 
   <!-- Action menu -->
 
   <browser:menu
-      id="plone_contentmenu_multilingual"
+      id="collective_multilingual__plone_contentmenu_multilingual"
       title="Translate menu - contains translation-related actions"
       class=".menu.TranslateMenu"
       />
 
   <adapter
+      name="plone.contentmenu.multilingual"
+      provides="plone.app.contentmenu.interfaces.IContentMenuItem"
       for="..interfaces.IMultilingual
            ..interfaces.IBrowserLayer"
-      name="plone.contentmenu.multilingual"
       factory=".menu.TranslateSubMenuItem"
-      provides="plone.app.contentmenu.interfaces.IContentMenuItem"
       />
 
   <adapter
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot
+      name="default"
+      for="plone.app.layout.navigation.interfaces.INavigationRoot
            ..interfaces.IBrowserLayer
            .setup.SetupLanguageView
            zope.schema.interfaces.IField
            z3c.form.interfaces.IWidget"
       factory=".setup.SetupFormDefaults"
-      name="default"
       />
 
   <!-- Integration for language-independent values in z3c.form -->
 
   <adapter
+      name="default"
       for="*
            ..interfaces.IBrowserLayer
            z3c.form.interfaces.IAddForm
            zope.schema.interfaces.IField
            z3c.form.interfaces.IWidget"
       factory=".form.AddingLanguageIndependentValue"
-      name="default"
       />
 
   <adapter
+      name="default"
       for="*
            ..interfaces.IBrowserLayer
            plone.z3cform.fieldsets.interfaces.IDescriptiveGroup
            zope.schema.interfaces.IField
            z3c.form.interfaces.IWidget"
       factory=".form.adaptGroupFormWidgetValue"
-      name="default"
       />
 
   <adapter
+      name="label"
       for="*
            ..interfaces.IBrowserLayer
            z3c.form.interfaces.IForm
            zope.schema.interfaces.IField
            z3c.form.interfaces.IWidget"
       factory=".form.LanguageIndependentWidgetLabel"
-      name="label"
       />
 
   <!-- Resources -->
 
-  <browser:resource name="multilingual-icon.png" image="resources/icon.png" />
+  <browser:resource
+      name="multilingual-icon.png"
+      image="resources/icon.png"
+      />
 
   <!-- Events -->
 

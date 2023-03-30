@@ -1,28 +1,22 @@
 # -*- coding: utf-8 -*-
 
-from zope.interface import implements
-from zope.interface import implementer
+from ..interfaces import IMultilingual
+from ..interfaces import LANGUAGE_INDEPENDENT_KEY
+from Acquisition import aq_base
+from plone.app.dexterity.behaviors.metadata import IDublinCore
+from Products.CMFCore.utils import getToolByName
+from z3c.form.interfaces import IValue
+from z3c.form.interfaces import NO_VALUE
 from zope.component import queryMultiAdapter
 from zope.i18n import Message
 from zope.i18nmessageid import MessageFactory
-
-from z3c.form.interfaces import NO_VALUE
-from z3c.form.interfaces import IValue
-
-from plone.app.dexterity.behaviors.metadata import IDublinCore
-from Products.CMFCore.utils import getToolByName
-from Acquisition import aq_base
-
-from ..interfaces import LANGUAGE_INDEPENDENT_KEY
-from ..interfaces import IMultilingual
+from zope.interface import implementer
 
 
 @implementer(IValue)
 def adaptGroupFormWidgetValue(context, request, form, field, widget):
     return queryMultiAdapter(
-        (context, request, form.parentForm, field, widget),
-        IValue,
-        name="default"
+        (context, request, form.parentForm, field, widget), IValue, name="default"
     )
 
 
@@ -36,9 +30,8 @@ def isLanguageIndependent(field):
         return False
 
 
+@implementer(IValue)
 class ValueBase(object):
-    implements(IValue)
-
     def __init__(self, context, request, form, field, widget):
         self.context = context
         self.request = request
@@ -48,23 +41,23 @@ class ValueBase(object):
 
     @property
     def catalog(self):
-        return getToolByName(self.context, 'portal_catalog')
+        return getToolByName(self.context, "portal_catalog")
 
 
 class AddingLanguageIndependentValue(ValueBase):
     def getTranslationUuid(self):
-        return self.request.form.get('translation')
+        return self.request.form.get("translation")
 
     def getLanguageId(self):
-        return self.request.form.get('language')
+        return self.request.form.get("language")
 
     def get(self):
         uuid = self.getTranslationUuid()
 
-        if self.field is IMultilingual['translations']:
+        if self.field is IMultilingual["translations"]:
             return [uuid]
 
-        if self.field is IDublinCore['language']:
+        if self.field is IDublinCore["language"]:
             return self.getLanguageId()
 
         if isLanguageIndependent(self.field):
@@ -92,12 +85,11 @@ class LanguageIndependentWidgetLabel(ValueBase):
     def get(self):
         label = self.widget.label
 
-        if (isLanguageIndependent(self.field) and
-            isinstance(label, Message) and
-            label != self.msgid
+        if (
+            isLanguageIndependent(self.field)
+            and isinstance(label, Message)
+            and label != self.msgid
         ):
-            label = MessageFactory(label.domain)(
-                self.msgid, mapping={'label': label}
-            )
+            label = MessageFactory(label.domain)(self.msgid, mapping={"label": label})
 
         return label

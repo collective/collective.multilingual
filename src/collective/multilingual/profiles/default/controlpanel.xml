@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
-<object
-    name="portal_controlpanel"
-    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-    i18n:domain="collective.multilingual"
-    purge="False">
+<object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+        name="portal_controlpanel"
+        purge="False"
+        i18n:domain="collective.multilingual"
+>
 
-    <configlet
-        title="Multilingual"
-        action_id="multilingual"
-        appId="collective.multilingual"
-        category="Products"
-        condition_expr=""
-        url_expr="string:${portal_url}/@@multilingual-settings"
-        icon_expr="string:$portal_url/++resource++multilingual-icon.png"
-        visible="True"
-        i18n:attributes="title">
-      <permission>Manage portal</permission>
-    </configlet>
+  <configlet action_id="multilingual"
+             appId="collective.multilingual"
+             category="Products"
+             condition_expr=""
+             icon_expr="string:$portal_url/++resource++multilingual-icon.png"
+             title="Multilingual"
+             url_expr="string:${portal_url}/@@multilingual-settings"
+             visible="True"
+             i18n:attributes="title"
+  >
+    <permission>Manage portal</permission>
+  </configlet>
 
 </object>

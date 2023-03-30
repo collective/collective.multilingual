@@ -1,16 +1,13 @@
-from zope.security import checkPermission
-from zope.component import ComponentLookupError
-
-from plone.memoize.view import memoize
+from ..interfaces import IMultilingual
+from ..interfaces import ITranslationGraph
+from ..utils import getSettings
 from plone.app.i18n.locales.browser import selector
 from plone.app.layout.navigation.defaultpage import isDefaultPage
 from plone.app.layout.navigation.interfaces import INavigationRoot
-
+from plone.memoize.view import memoize
 from Products.CMFCore.utils import getToolByName
-
-from ..interfaces import ITranslationGraph
-from ..interfaces import IMultilingual
-from ..utils import getSettings
+from zope.component import ComponentLookupError
+from zope.security import checkPermission
 
 
 class LanguageSelector(selector.LanguageSelector):
@@ -22,13 +19,16 @@ class LanguageSelector(selector.LanguageSelector):
     def getLanguageActions(self):
         site = getToolByName(self.context, name="portal_url").getPortalObject()
 
-        lt = getToolByName(self.context, 'portal_languages')
+        lt = getToolByName(self.context, "portal_languages")
         default_lang = lt.getDefaultLanguage()
 
         entries = self.languages()
-        mappings = [site, {
-            default_lang: site,
-        }]
+        mappings = [
+            site,
+            {
+                default_lang: site,
+            },
+        ]
 
         try:
             settings = getSettings(site)
@@ -67,13 +67,13 @@ class LanguageSelector(selector.LanguageSelector):
     def mapEntries(self, entries, *mappings):
         result = []
         for entry in entries:
-            lang_id = entry['code']
+            lang_id = entry["code"]
 
             for mapping in mappings:
                 obj = mapping.get(lang_id)
                 if obj is not None:
                     if checkPermission("zope2.View", obj):
-                        entry['url'] = obj.absolute_url()
+                        entry["url"] = obj.absolute_url()
                         result.append(entry)
                         break
 

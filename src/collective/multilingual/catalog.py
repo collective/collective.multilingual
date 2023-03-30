@@ -1,14 +1,15 @@
+from .interfaces import IMultilingual
 from Acquisition import aq_base
 from plone.indexer import indexer
-from .interfaces import IMultilingual
+
 
 @indexer(IMultilingual)
-def translations(obj):
+def TranslationsIndexer(obj):
     unwrapped = aq_base(obj)
     return set(getattr(unwrapped, "translations", ()) or ())
 
 
 @indexer(IMultilingual)
-def language(obj):
+def LanguageIndexer(obj):
     unwrapped = aq_base(obj)
     return getattr(unwrapped, "language", None)

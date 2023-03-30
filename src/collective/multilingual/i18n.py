@@ -1,3 +1,4 @@
 from zope.i18nmessageid import MessageFactory
 
-MessageFactory = MessageFactory('collective.multilingual')
+
+MessageFactory = MessageFactory("collective.multilingual")

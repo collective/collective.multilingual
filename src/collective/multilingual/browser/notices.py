@@ -1,11 +1,10 @@
-from zope.component import getMultiAdapter
-from z3c.form.interfaces import IAddForm
+from ..interfaces import ITranslationGraph
+from ..utils import getObjectByuuid
 from plone.z3cform.interfaces import IFormWrapper
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-
-from ..interfaces import ITranslationGraph
-from ..utils import getObjectByuuid
+from z3c.form.interfaces import IAddForm
+from zope.component import getMultiAdapter
 
 
 class NoticeViewletBase(object):
@@ -20,7 +19,7 @@ class NoticeViewletBase(object):
 
 class SupportedLanguagesNoticeViewlet(NoticeViewletBase):
     def update(self):
-        lt = getToolByName(self.context, 'portal_languages')
+        lt = getToolByName(self.context, "portal_languages")
         supported = lt.listSupportedLanguages()
         self.available = len(supported) <= 1
 
@@ -35,8 +34,8 @@ class ParentNotTranslatedNoticeViewlet(NoticeViewletBase):
         if not IAddForm.providedBy(form):
             return
 
-        uuid = self.request.form.get('translation')
-        language = self.request.form.get('language')
+        uuid = self.request.form.get("translation")
+        language = self.request.form.get("language")
         if not uuid or not language:
             return
 
@@ -44,7 +43,7 @@ class ParentNotTranslatedNoticeViewlet(NoticeViewletBase):
 
         context_state = getMultiAdapter(
             (obj, self.request), name=u"plone_context_state"
-            )
+        )
 
         # This is now the parent of the item that we're trying to
         # create a new translation for!
@@ -64,5 +63,4 @@ class ParentNotTranslatedNoticeViewlet(NoticeViewletBase):
         # Okay, we'll show the notice.
         self.available = True
         self.folder = obj
-        self.language = self.request.locale.displayNames.languages.\
-                        get(language)
+        self.language = self.request.locale.displayNames.languages.get(language)

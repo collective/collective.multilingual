@@ -1,26 +1,31 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:five="http://namespaces.zope.org/five"
-    xmlns:i18n="http://namespaces.zope.org/i18n"
-    xmlns:grok="http://namespaces.zope.org/grok"
-    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-    xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:z3c="http://namespaces.zope.org/z3c"
-    i18n_domain="collective.multilingual">
+    i18n_domain="collective.multilingual"
+    >
 
   <include package="plone.app.dexterity" />
-  <include package="plone.behavior" file="meta.zcml" />
+  <include
+      package="plone.behavior"
+      file="meta.zcml"
+      />
   <include package=".browser" />
+  <include package=".upgrades"/>
 
   <i18n:registerTranslations directory="locales" />
-  
+
   <plone:behavior
-      title="Multilingual"
+      name="collective.multilingual"
+      title="Multilingual (collective.multilingual)"
       description="Enables support for content in multiple languages."
       provides=".interfaces.IMultilingual"
       marker=".interfaces.IMultilingual"
-      for="plone.dexterity.interfaces.IDexterityContent"
       />
 
   <!-- Translations -->
@@ -46,15 +51,21 @@
 
   <utility
       name="collective.multilingual.vocabularies.Indexes"
-      factory=".vocabularies.Indexes"
+      component=".vocabularies.IndexesFactory"
       />
 
   <!-- Adapters -->
 
   <adapter factory=".graph.MultilingualTranslationGraph" />
 
-  <adapter factory=".catalog.translations" name="translations" />
-  <adapter factory=".catalog.language" name="language" />
+  <adapter
+      name="translations"
+      factory=".catalog.TranslationsIndexer"
+      />
+  <adapter
+      name="Language"
+      factory=".catalog.LanguageIndexer"
+      />
 
   <!-- Events -->
 
@@ -85,16 +96,28 @@
   <genericsetup:registerProfile
       name="default"
       title="Multilingual"
-      directory="profiles/default"
       description="Registers control panel and default settings."
       provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/default"
       />
+
   <genericsetup:registerProfile
       name="uninstall"
       title="Multilingual: uninstallation"
-      directory="profiles/uninstall"
       description="Uninstalls collective.multilingual."
       provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/uninstall"
+      />
+
+  <utility
+      factory=".setuphandlers.HiddenProfiles"
+      name="collective.multilingual-hiddenprofiles"
+      />
+
+  <utility
+      component=".query.modifier"
+      name="collective.multilingual-language"
+      provides="plone.app.querystring.interfaces.IQueryModifier"
       />
 
 </configure>

@@ -1,0 +1,20 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+  xmlns:gs="http://namespaces.zope.org/genericsetup">
+
+  <gs:registerProfile name="2"
+    title="Upgrade step to version 2"
+    directory="profiles/2"
+    for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+    provides="Products.GenericSetup.interfaces.EXTENSION" />
+
+  <gs:upgradeSteps source="1.0"
+    destination="1001"
+    profile="collective.multilingual:default">
+
+    <gs:upgradeDepends
+      title="Change Language index to be uppercase"
+      import_profile="collective.multilingual.upgrades:2" />
+
+  </gs:upgradeSteps>
+
+</configure>

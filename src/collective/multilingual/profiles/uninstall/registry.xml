@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
 <registry>
-  <records delete="True" interface="collective.multilingual.interfaces.ISettings" />
+  <records delete="True"
+           interface="collective.multilingual.interfaces.ISettings"
+  />
 </registry>

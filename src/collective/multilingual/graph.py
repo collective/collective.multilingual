@@ -1,19 +1,18 @@
-import functools
-
-from zope.interface import implements
-from zope.component import adapts
-
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import IPloneSiteRoot
-from Acquisition import aq_base
-
-from plone.uuid.interfaces import IUUID
-from plone.memoize.ram import store_in_cache
-
 from .interfaces import IMultilingual
 from .interfaces import ITranslationGraph
-from .utils import logger
 from .utils import getPersistentTranslationCounter
+from .utils import logger
+from Acquisition import aq_base
+from plone.memoize.ram import store_in_cache
+from plone.uuid.interfaces import IUUID
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import IPloneSiteRoot
+from six.moves import map
+from zope.component import adapter
+from zope.interface import implementer
+
+import functools
+
 
 marker = object()
 
@@ -75,13 +74,12 @@ class CacheProxy(object):
         return result
 
 
+@implementer(ITranslationGraph)
+@adapter(IMultilingual)
 class MultilingualTranslationGraph(object):
-    implements(ITranslationGraph)
-    adapts(IMultilingual)
-
     def __init__(self, context):
         self.context = context
-        self.catalog = getToolByName(context, 'portal_catalog')
+        self.catalog = getToolByName(context, "portal_catalog")
         self.uuid = str(IUUID(context))
 
     def resolve(self, uuid):
@@ -141,7 +139,7 @@ class MultilingualTranslationGraph(object):
                 for (lang_id, uuid, distance) in value
             ]
 
-        lt = getToolByName(self.context, 'portal_languages')
+        lt = getToolByName(self.context, "portal_languages")
         supported = lt.listSupportedLanguages()
         assert len(supported) > 1
 
@@ -151,7 +149,7 @@ class MultilingualTranslationGraph(object):
         distance = 0
 
         # 1. Objects appearing in the present translation graph.
-        for lang_id, item in self.getTranslations():
+        for lang_id, item in self.getTranslations(include_context=True):
             if not lang_id:
                 lang_id = default_lang
 
@@ -187,25 +185,26 @@ class MultilingualTranslationGraph(object):
         for lang_id in langs:
             lang_items.append((lang_id, None, -1))
 
-        return cache.set(lang_items, [
-            (lang_id, str(IUUID(item)) if item is not None else None, distance)
-            for (lang_id, item, distance) in lang_items])
+        return cache.set(
+            lang_items,
+            [
+                (lang_id, str(IUUID(item)) if item is not None else None, distance)
+                for (lang_id, item, distance) in lang_items
+            ],
+        )
 
     @cache
-    def getTranslations(self, cache):
+    def getTranslations(self, cache, include_context=False):
         value = cache.get(marker)
         if value is not marker:
-            return [
-                (lang_id, self.resolve(uuid))
-                for (lang_id, uuid) in value
-            ]
+            return [(lang_id, self.resolve(uuid)) for (lang_id, uuid) in value]
 
-        result = list(self.iterTranslations())
-        return cache.set(result, [
-            (lang_id, str(IUUID(obj)))
-            for (lang_id, obj) in result])
+        result = list(self.iterTranslations(include_context))
+        return cache.set(
+            result, [(lang_id, str(IUUID(obj))) for (lang_id, obj) in result]
+        )
 
-    def iterTranslations(self):
+    def iterTranslations(self, include_context=False):
         canonical = self.getCanonicalContent()
         if canonical is None:
             return
@@ -221,8 +220,9 @@ class MultilingualTranslationGraph(object):
         if uuids:
             uuids = set(uuids)
 
-            # 3. Don't include the context of the graph.
-            uuids.discard(self.uuid)
+            if not include_context:
+                # 3. Don't include the context of the graph.
+                uuids.discard(self.uuid)
 
             for brain in _recurse(self.catalog, list(uuids)):
                 obj = brain.getObject()
@@ -238,8 +238,8 @@ class MultilingualTranslationGraph(object):
             lang_id = getattr(aq_base(obj), "language", None)
             if lang_id is None:
                 logger.warning(
-                    "expected language set on object: %s." %
-                    "/".join(obj.getPhysicalPath())
+                    "expected language set on object: %s."
+                    % "/".join(obj.getPhysicalPath())
                 )
             else:
                 yield lang_id, obj
@@ -259,7 +259,7 @@ class MultilingualTranslationGraph(object):
     def clear(self):
         uuids = aq_base(self.context.translations)
         if uuids:
-            items = map(self.resolve, uuids)
+            items = list(map(self.resolve, uuids))
             self.context.translations = set()
             getPersistentTranslationCounter(self.context).change(1)
             return items
@@ -272,11 +272,9 @@ class MultilingualTranslationGraph(object):
             return
 
         if len(result) > 1:
-            logger.warn(
-                "This object is contained in multiple translation graphs!"
-            )
+            logger.warn("This object is contained in multiple translation graphs!")
 
         obj = result[0].getObject()
-        obj.translations = obj.translations - set((self.uuid, ))
+        obj.translations = obj.translations - set((self.uuid,))
         getPersistentTranslationCounter(self.context).change(1)
         return obj

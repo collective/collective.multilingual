@@ -1,15 +1,17 @@
-from zope.component import getSiteManager
-from zope.interface import implements
-from zope.schema.interfaces import IVocabularyFactory
-from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
-
-from plone.dexterity.interfaces import IDexterityFTI
-from plone.dexterity.interfaces import IDexterityContainer
-from plone.dexterity.interfaces import IDexterityContent
-from plone.dexterity.utils import resolveDottedName
-
-from Products.CMFCore.utils import getToolByName
+import six
 from Acquisition import aq_base
+from plone import api
+from plone.dexterity.interfaces import (
+    IDexterityContainer,
+    IDexterityContent,
+    IDexterityFTI,
+)
+from plone.dexterity.utils import resolveDottedName
+from Products.CMFCore.utils import getToolByName
+from zope.component import getAllUtilitiesRegisteredFor, getSiteManager
+from zope.interface import implementer
+from zope.schema.interfaces import IVocabularyFactory
+from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
 from .i18n import MessageFactory as _
 from .interfaces import IMultilingual
@@ -39,13 +41,14 @@ class DexterityContentVocabulary(SimpleVocabulary):
             return self.createTerm(token)
 
 
+@implementer(IVocabularyFactory)
 class Translations(object):
-    implements(IVocabularyFactory)
-
     def __call__(self, context):
         terms = []
-        catalog = getToolByName(context, 'portal_catalog')
-        display_languages = context.REQUEST.locale.displayNames.languages
+        portal = api.portal.get()
+        request = portal.REQUEST
+        catalog = api.portal.get_tool("portal_catalog")
+        display_languages = request.locale.displayNames.languages
 
         def uuidToObject(uuid):
             if uuid:
@@ -61,11 +64,13 @@ class Translations(object):
             return SimpleTerm(
                 uuid,
                 uuid,
-                _(u"${language}: ${title}", mapping={
-                    'language': display_languages.get(
-                        obj.language, _(u"Neutral")),
-                    'title': obj.title,
-                }),
+                _(
+                    "${language}: ${title}",
+                    mapping={
+                        "language": display_languages.get(obj.language, _("Neutral")),
+                        "title": obj.title,
+                    },
+                ),
             )
 
         if IMultilingual.providedBy(context):
@@ -74,20 +79,19 @@ class Translations(object):
                     term = createTerm(uuid)
                 except LookupError:
                     logger.warn("can't resolve reference: %r." % uuid)
-                    term = SimpleTerm(uuid, uuid, _(u"Missing"))
+                    term = SimpleTerm(uuid, uuid, _("Missing"))
 
                 terms.append(term)
 
         return DexterityContentVocabulary(createTerm, terms)
 
 
+@implementer(IVocabularyFactory)
 class FTIs(object):
-    implements(IVocabularyFactory)
     interface = IDexterityContent
 
     def __call__(self, context):
-        sm = getSiteManager(context)
-        ftis = sm.getAllUtilitiesRegisteredFor(IDexterityFTI)
+        ftis = getAllUtilitiesRegisteredFor(IDexterityFTI)
 
         terms = []
         for fti in ftis:
@@ -102,19 +106,16 @@ class ContainerFTIs(FTIs):
     interface = IDexterityContainer
 
 
+@implementer(IVocabularyFactory)
 class Indexes(object):
-    implements(IVocabularyFactory)
-
     def __call__(self, context):
-        try:
-            catalog = context.portal_catalog
-        except AttributeError, exc:
-            logger.warn("%s: %r" % (exc, context))
-            terms = []
-        else:
-            terms = [
-                SimpleTerm(name, unicode(name), unicode(name))
-                for name in sorted(catalog.indexes())
-            ]
-
+        portal = api.portal.get()
+        catalog = api.portal.get_tool("portal_catalog")
+        terms = [
+            SimpleTerm(name, six.text_type(name), six.text_type(name))
+            for name in sorted(catalog.indexes())
+        ]
         return SimpleVocabulary(terms)
+
+
+IndexesFactory = Indexes()
