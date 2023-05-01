@@ -114,10 +114,4 @@
       name="collective.multilingual-hiddenprofiles"
       />
 
-  <utility
-      component=".query.modifier"
-      name="collective.multilingual-language"
-      provides="plone.app.querystring.interfaces.IQueryModifier"
-      />
-
 </configure>
