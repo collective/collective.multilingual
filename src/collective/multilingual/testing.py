@@ -102,9 +102,11 @@ class Fixture(PloneSandboxLayer):
 
     def setUpLanguages(self, portal):
         # Add "Danish" and "German" as supported languages.
-        portal.portal_languages.addSupportedLanguage("da")
-        portal.portal_languages.addSupportedLanguage("de")
-        portal.portal_languages.addSupportedLanguage("es")
+        import plone.api
+
+        plone.api.portal.set_registry_record(
+            name="plone.available_languages", value=["da", "de", "es"]
+        )
 
     def setUpContentTypes(self, portal):
         from collective.multilingual.interfaces import IMultilingual
