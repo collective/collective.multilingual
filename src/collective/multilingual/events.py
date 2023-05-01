@@ -65,7 +65,9 @@ def objectAddedEvent(context, event):
     parent = result[0].getObject()
     if not is_copy and parent.creation_date >= context.creation_date:
         logger.warn(
-            "parent %r is newer than translation %r." % (uuid, str(IUUID(context)))
+            "parent {!r} is newer than translation {!r}.".format(
+                uuid, str(IUUID(context))
+            )
         )
 
     # If the item being copied or translated was a default page, apply

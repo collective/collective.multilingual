@@ -1,7 +1,6 @@
 from collective.multilingual.utils import dottedName
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
-from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
 
 
@@ -15,8 +14,8 @@ class Fixture(PloneSandboxLayer):
         self.applyProfile(portal, "collective.multilingual:default")
 
         # Make test user a content contributor.
-        from plone.app.testing import TEST_USER_ID
         from plone.app.testing import setRoles
+        from plone.app.testing import TEST_USER_ID
 
         setRoles(portal, TEST_USER_ID, ["Member", "Contributor"])
 
@@ -30,7 +29,7 @@ class Fixture(PloneSandboxLayer):
 
         # 1. Create front page:
         page = createContentInContainer(
-            portal, "Item", id="front-page", title=u"Front page"
+            portal, "Item", id="front-page", title="Front page"
         )
 
         # 2. Create language folders /da and /de:
@@ -59,7 +58,7 @@ class Fixture(PloneSandboxLayer):
             danish,
             "Item",
             id="forside",
-            title=u"Forside",
+            title="Forside",
             translations=[str(IUUID(page))],
         )
 
@@ -78,7 +77,7 @@ class Fixture(PloneSandboxLayer):
             danish,
             "Container",
             id="mappe",
-            language=u"da",
+            language="da",
             translations=[str(IUUID(folder1))],
         )
 
@@ -108,11 +107,11 @@ class Fixture(PloneSandboxLayer):
         portal.portal_languages.addSupportedLanguage("es")
 
     def setUpContentTypes(self, portal):
-        from plone.dexterity.fti import DexterityFTI
-        from plone.dexterity.fti import register
+        from collective.multilingual.interfaces import IMultilingual
         from plone.app.content.interfaces import INameFromTitle
         from plone.app.dexterity.behaviors.metadata import IOwnership
-        from collective.multilingual.interfaces import IMultilingual
+        from plone.dexterity.fti import DexterityFTI
+        from plone.dexterity.fti import register
 
         bs = (
             dottedName(IMultilingual),

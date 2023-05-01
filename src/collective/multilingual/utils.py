@@ -15,7 +15,7 @@ COUNTER = "collective.multilingual.counter"
 
 
 def dottedName(interface):
-    return "%s.%s" % (interface.__module__, interface.__name__)
+    return f"{interface.__module__}.{interface.__name__}"
 
 
 def getObjectByuuid(context, uuid):
@@ -44,6 +44,6 @@ def getSettings(site):
 
     try:
         return registry.forInterface(ISettings)
-    except:
+    except:  # noqa: E722
         log_exc()
         raise ComponentLookupError(ISettings)
