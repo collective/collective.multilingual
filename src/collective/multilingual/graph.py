@@ -1,7 +1,5 @@
-from .interfaces import IMultilingual
-from .interfaces import ITranslationGraph
-from .utils import getPersistentTranslationCounter
-from .utils import logger
+import functools
+
 from Acquisition import aq_base
 from plone.memoize.ram import store_in_cache
 from plone.uuid.interfaces import IUUID
@@ -10,8 +8,8 @@ from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.interface import implementer
 
-import functools
-
+from .interfaces import IMultilingual, ITranslationGraph
+from .utils import getPersistentTranslationCounter, logger
 
 marker = object()
 
@@ -274,6 +272,6 @@ class MultilingualTranslationGraph:
             logger.warn("This object is contained in multiple translation graphs!")
 
         obj = result[0].getObject()
-        obj.translations = obj.translations - {self.uuid}
+        obj.translations = list(set(obj.translations) - set((self.uuid,)))
         getPersistentTranslationCounter(self.context).change(1)
         return obj
