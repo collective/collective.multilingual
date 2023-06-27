@@ -18,24 +18,35 @@ def applyLanguageFilter(site, blacklist, request, kw):
 
     for query in (request, kw):
         if query is not None:
-            if LANGUAGE_INDEX_NAME in query:
-                language = query.get(LANGUAGE_INDEX_NAME, _marker)
-                if language == "all":
-                    del query[LANGUAGE_INDEX_NAME]
-
+            language = query.pop(LANGUAGE_INDEX_NAME, _marker)
+            if language == "all":
                 return
 
-            path_query = query.get("path")
-            if isinstance(path_query, dict) and path_query == {"query": ""}:
-                query.pop("path")
+            path = query.get("path", {}).get('query', '')
+            if len(path) == 1: path = path[0]
+            if isinstance(path, str) and path.strip('/') in ["", site.id]:
+                query.pop("path", None)
+
+            if language is _marker:
+                language = query.get(LANGUAGE_INDEX_NAME, _marker)
+                if language is not _marker:
+                    if language == "all":
+                        del query[LANGUAGE_INDEX_NAME]
+
+                    return
+            else:
+                query[LANGUAGE_INDEX_NAME] = language
 
             if set(query) & blacklist:
                 return
 
     language = lt.getPreferredLanguage()
-    query[LANGUAGE_INDEX_NAME] = (
-        (language, "") if language == lt.getDefaultLanguage() else (language,)
-    )
+    if language == lt.getDefaultLanguage():
+        default = u""
+    else:
+        default = None
+
+    query[LANGUAGE_INDEX_NAME] = (language, default)
 
     # XXX: For path queries that target a path under a language
     # folder, and if we want to support a list of (language-neutral)
