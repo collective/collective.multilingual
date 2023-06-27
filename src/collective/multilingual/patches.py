@@ -22,10 +22,9 @@ def applyLanguageFilter(site, blacklist, request, kw):
             if language == "all":
                 return
 
-            path = query.get("path", {}).get('query', '')
-            if len(path) == 1: path = path[0]
-            if isinstance(path, str) and path.strip('/') in ["", site.id]:
-                query.pop("path", None)
+            path_query = query.get("path")
+            if isinstance(path_query, dict) and path_query == {"query": ""}:
+                query.pop("path")
 
             if language is _marker:
                 language = query.get(LANGUAGE_INDEX_NAME, _marker)
