@@ -41,6 +41,7 @@ setup(name='collective.multilingual',
           'setuptools',
           'Products.CMFPlone>=4.1',
           'plone.app.dexterity',
+          'plone.formwidget.contenttree',
           'plone.behavior',
       ],
       extras_require = {
