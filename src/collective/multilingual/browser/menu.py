@@ -204,7 +204,7 @@ class TranslateSubMenuItem(BrowserSubMenuItem):
     title = _(u"label_translate_menu", default=u"Translate")
     description = _(u"title_translate_menu",
                     default="Manage translations for your content.")
-    submenuId = "plone_contentmenu_multilingual"
+    submenuId = "collective_multilingual__plone_contentmenu_multilingual"
     order = 5
     extra = {"id": "plone-contentmenu-multilingual"}
 

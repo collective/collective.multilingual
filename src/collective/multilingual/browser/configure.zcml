@@ -71,7 +71,7 @@
   <!-- Action menu -->
 
   <browser:menu
-      id="plone_contentmenu_multilingual"
+      id="collective_multilingual__plone_contentmenu_multilingual"
       title="Translate menu - contains translation-related actions"
       class=".menu.TranslateMenu"
       />
