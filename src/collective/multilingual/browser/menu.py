@@ -8,7 +8,6 @@ from plone.memoize.instance import memoize
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.defaultpage import get_default_page
 from zope.browsermenu.menu import BrowserMenu
 from zope.browsermenu.menu import BrowserSubMenuItem
 from zope.component import getUtility
@@ -19,6 +18,14 @@ import six
 import six.moves.urllib.error
 import six.moves.urllib.parse
 import six.moves.urllib.request
+
+
+try:
+    # Plone >= 6
+    from plone.base.defaultpage import get_default_page
+except ImportError:
+    # Plone < 6
+    from Products.CMFPlone.defaultpage import get_default_page
 
 
 def getTranslationActionItems(context, request):

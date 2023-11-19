@@ -2,12 +2,19 @@ from ..interfaces import IMultilingual
 from ..interfaces import ITranslationGraph
 from ..utils import getSettings
 from plone.app.i18n.locales.browser import selector
-from plone.app.layout.navigation.defaultpage import isDefaultPage
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.memoize.view import memoize
 from Products.CMFCore.utils import getToolByName
 from zope.component import ComponentLookupError
 from zope.security import checkPermission
+
+
+try:
+    # Plone >= 6
+    from plone.base.defaultpage import is_default_page
+except ImportError:
+    # Plone < 6
+    from plone.app.layout.navigation.defaultpage import isDefaultPage as is_default_page
 
 
 class LanguageSelector(selector.LanguageSelector):
@@ -45,7 +52,7 @@ class LanguageSelector(selector.LanguageSelector):
     def getTranslations(self):
         context = self.context.aq_inner
         parent = context.__parent__
-        if isDefaultPage(parent, context):
+        if is_default_page(parent, context):
             if not INavigationRoot.providedBy(parent):
                 context = parent
 
@@ -57,7 +64,7 @@ class LanguageSelector(selector.LanguageSelector):
                 continue
 
             parent = item.__parent__
-            if isDefaultPage(parent, item):
+            if is_default_page(parent, item):
                 item = parent
 
             translations[lang_id] = item
