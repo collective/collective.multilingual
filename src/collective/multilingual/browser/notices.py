@@ -7,14 +7,14 @@ from z3c.form.interfaces import IAddForm
 from zope.component import getMultiAdapter
 
 
-class NoticeViewletBase(object):
+class NoticeViewletBase:
     available = False
 
     def render(self):
         if self.available:
             return self.index()
 
-        return u""
+        return ""
 
 
 class SupportedLanguagesNoticeViewlet(NoticeViewletBase):
@@ -41,9 +41,7 @@ class ParentNotTranslatedNoticeViewlet(NoticeViewletBase):
 
         obj = getObjectByuuid(self.context, uuid)
 
-        context_state = getMultiAdapter(
-            (obj, self.request), name=u"plone_context_state"
-        )
+        context_state = getMultiAdapter((obj, self.request), name="plone_context_state")
 
         # This is now the parent of the item that we're trying to
         # create a new translation for!

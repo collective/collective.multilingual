@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-
-import logging
-
 from ..i18n import MessageFactory as _
-from ..interfaces import IBrowserLayer
 from ..interfaces import ITranslationGraph
 from Acquisition import aq_base
 from plone.app.layout.navigation.interfaces import INavigationRoot
@@ -13,8 +8,6 @@ from plone.memoize.instance import memoize
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.defaultpage import check_default_page_via_view
-from Products.CMFPlone.defaultpage import get_default_page
 from zope.browsermenu.menu import BrowserMenu
 from zope.browsermenu.menu import BrowserSubMenuItem
 from zope.component import getUtility
@@ -26,14 +19,18 @@ import six.moves.urllib.error
 import six.moves.urllib.parse
 import six.moves.urllib.request
 
-LOGGER = logging.getLogger(__name__)
+
+try:
+    # Plone >= 6
+    from plone.base.defaultpage import get_default_page
+except ImportError:
+    # Plone < 6
+    from Products.CMFPlone.defaultpage import get_default_page
 
 
 def getTranslationActionItems(context, request):
     """Return action menu items for 'Translate' menu."""
-
     parent = context.__parent__
-    is_default_page = check_default_page_via_view(context, request)
 
     # There is a special case here which is when the ``context`` is a
     # default page. In this case, we compute the nearest translations
@@ -72,7 +69,7 @@ def getTranslationActionItems(context, request):
         if display_lang_name is None:
             display_lang_name = available_languages[lang_id]
 
-        title = six.text_type(display_lang_name)
+        title = str(display_lang_name)
 
         if use_parent:
             if distance >= 0:
@@ -96,15 +93,15 @@ def getTranslationActionItems(context, request):
             fti = getUtility(IDexterityFTI, name=item.portal_type)
             info = fti.getActionInfo("object/view")
             url = "/" + info["url"]
-            title += u" ✓"
+            title += " ✓"
 
         # Otherwise, link to the add form.
         else:
             uuid = str(IUUID(add_context))
             portal_type = add_context.portal_type
-            title = _(u"${title} (add...)", mapping={"title": title})
+            title = _("${title} (add...)", mapping={"title": title})
 
-            url = "/++add++%s?%s" % (
+            url = "/++add++{}?{}".format(
                 portal_type,
                 six.moves.urllib.parse.urlencode(
                     {
@@ -122,12 +119,12 @@ def getTranslationActionItems(context, request):
                         item = site[lang_id]
                     except KeyError:
                         title = _(
-                            u"${lang_name} (setup required)",
+                            "${lang_name} (setup required)",
                             mapping={"lang_name": title},
                         )
 
                         url = site_url + "/" + lang_id + url
-                        url = "/@@setup-language?language=%s&next_url=%s" % (
+                        url = "/@@setup-language?language={}&next_url={}".format(
                             lang_id,
                             six.moves.urllib.parse.quote_plus(url),
                         )
@@ -140,8 +137,8 @@ def getTranslationActionItems(context, request):
         entry = {
             "title": translate(title, context=request),
             "description": _(
-                u"description_translate_into",
-                default=u"Translate into ${lang_name}",
+                "description_translate_into",
+                default="Translate into ${lang_name}",
                 mapping={"lang_name": display_lang_name},
             ),
             "action": action_url,
@@ -159,13 +156,13 @@ def getTranslationActionItems(context, request):
 
         menu.append(entry)
 
-    menu.sort(key=lambda item: six.text_type(item["title"]))
+    menu.sort(key=lambda item: str(item["title"]))
 
     if graph.getTranslations():
         menu.append(
             {
-                "title": _(u"Clear..."),
-                "description": _(u"Clear the list of translation references."),
+                "title": _("Clear..."),
+                "description": _("Clear the list of translation references."),
                 "action": graph.context.absolute_url() + "/@@clear-translations",
                 "selected": False,
                 "icon": None,
@@ -176,10 +173,10 @@ def getTranslationActionItems(context, request):
     else:
         menu.append(
             {
-                "title": _(u"This is a translation of..."),
+                "title": _("This is a translation of..."),
                 "description": _(
-                    u"Mark this item as the translation for "
-                    u"another content item on the site."
+                    "Mark this item as the translation for "
+                    "another content item on the site."
                 ),
                 "action": graph.context.absolute_url() + "/@@set-translation-for",
                 "selected": False,
@@ -206,9 +203,9 @@ class TranslateMenu(BrowserMenu):
             items.append(
                 {
                     "title": _(
-                        u"title_language_settings", default=u"Language settings..."
+                        "title_language_settings", default="Language settings..."
                     ),
-                    "description": _(u"description_language_settings", default=u""),
+                    "description": _("description_language_settings", default=""),
                     "action": site.absolute_url() + "/@@language-controlpanel",
                     "selected": False,
                     "icon": None,
@@ -225,9 +222,9 @@ class TranslateMenu(BrowserMenu):
 
 
 class TranslateSubMenuItem(BrowserSubMenuItem):
-    title = _(u"label_translate_menu", default=u"Translate")
+    title = _("label_translate_menu", default="Translate")
     description = _(
-        u"title_translate_menu", default="Manage translations for your content."
+        "title_translate_menu", default="Manage translations for your content."
     )
     submenuId = "collective_multilingual__plone_contentmenu_multilingual"
     order = 5

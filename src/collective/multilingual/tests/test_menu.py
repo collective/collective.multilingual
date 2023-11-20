@@ -1,6 +1,6 @@
 from ..testing import INTEGRATION_TESTING
 
-import unittest2 as unittest
+import unittest
 
 
 def extract_langs(titles):
@@ -12,11 +12,11 @@ def extract_langs(titles):
     """
 
     langs = [title.split(" ", 1)[0] for title in titles]
-    return set(lang for lang in langs if len(lang) <= 3)
+    return {lang for lang in langs if len(lang) <= 3}
 
 
 def extract_actions(items):
-    return dict((item["extra"]["id"], item["action"]) for item in items)
+    return {item["extra"]["id"]: item["action"] for item in items}
 
 
 class TestMenu(unittest.TestCase):
@@ -37,13 +37,13 @@ class TestMenu(unittest.TestCase):
 
     def test_page_in_neutral_language(self):
         items = self.make_items(self.layer["portal"]["front-page"])
-        titles = set(item["title"] for item in items)
-        self.assertEqual(extract_langs(titles), set(("de", "da", "es")))
+        titles = {item["title"] for item in items}
+        self.assertEqual(extract_langs(titles), {"de", "da", "es"})
 
     def test_page_in_other_language(self):
         items = self.make_items(self.layer["portal"]["da"]["forside"])
-        titles = set(item["title"] for item in items)
-        self.assertEqual(extract_langs(titles), set(("de", "en", "es")))
+        titles = {item["title"] for item in items}
+        self.assertEqual(extract_langs(titles), {"de", "en", "es"})
 
     def test_default_page_in_folder_with_translation(self):
         page = self.layer["portal"]["folder"]["default-item"]

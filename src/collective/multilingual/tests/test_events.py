@@ -1,6 +1,6 @@
 from ..testing import FUNCTIONAL_TESTING
 
-import unittest2 as unittest
+import unittest
 
 
 class TestEvents(unittest.TestCase):
@@ -8,7 +8,7 @@ class TestEvents(unittest.TestCase):
 
     def test_inherit_language(self):
         page = self.layer["portal"]["da"]["forside"]
-        self.assertEqual(page.language, u"da")
+        self.assertEqual(page.language, "da")
 
     def test_copy_into_language_folder(self):
         folder = self.layer["portal"]["folder"]

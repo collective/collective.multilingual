@@ -1,1 +1,1 @@
-from . import patches
+from . import patches  # noqa: F401

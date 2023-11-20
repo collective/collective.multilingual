@@ -5,12 +5,20 @@ from .utils import logger
 from Acquisition import aq_base
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.defaultpage import check_default_page_via_view
-from Products.CMFPlone.defaultpage import get_default_page
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.globalrequest import getRequest
 from zope.lifecycleevent import modified
 from zope.schema.interfaces import ValidationError
+
+
+try:
+    # Plone >= 6
+    from plone.base.defaultpage import check_default_page_via_view
+    from plone.base.defaultpage import get_default_page
+except ImportError:
+    # Plone < 6
+    from Products.CMFPlone.defaultpage import check_default_page_via_view
+    from Products.CMFPlone.defaultpage import get_default_page
 
 
 def objectAddedEvent(context, event):
@@ -65,7 +73,9 @@ def objectAddedEvent(context, event):
     parent = result[0].getObject()
     if not is_copy and parent.creation_date >= context.creation_date:
         logger.warn(
-            "parent %r is newer than translation %r." % (uuid, str(IUUID(context)))
+            "parent {!r} is newer than translation {!r}.".format(
+                uuid, str(IUUID(context))
+            )
         )
 
     # If the item being copied or translated was a default page, apply

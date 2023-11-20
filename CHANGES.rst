@@ -8,7 +8,7 @@ Changes
   by Zope does not provide one.
   [malthe]
 
-- Plone 5.2 and Python 3 support.
+- Plone 5.2, Plone 6 and Python 3 support.
   [thet]
 
 - Language switcher: Do not render a link for the current language.
