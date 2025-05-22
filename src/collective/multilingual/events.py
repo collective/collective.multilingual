@@ -124,6 +124,13 @@ def objectModifiedEvent(context, event):
             continue
 
         for item in items:
+            if context.portal_type != item.portal_type:
+                logger.warn(
+                    """Target item (%s) is not the same type as the source
+                    item (%s). Translating the content might fail.""",
+                    item.portal_type,
+                    context.portal_type
+                )
             adapter = field.interface(item, None)
             if adapter is None:
                 # Do not break, if adapter cannot be found.
