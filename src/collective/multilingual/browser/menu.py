@@ -236,9 +236,6 @@ class TranslateSubMenuItem(BrowserSubMenuItem):
 
     @memoize
     def available(self):
-        if INavigationRoot.providedBy(self.context):
-            return False
-
         lt = getToolByName(self.context, "portal_languages", None)
         if lt is None:
             return False
