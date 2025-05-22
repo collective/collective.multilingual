@@ -124,7 +124,12 @@ def objectModifiedEvent(context, event):
             continue
 
         for item in items:
-            adapter = field.interface(item)
+            adapter = field.interface(item, None)
+            if adapter is None:
+                # Do not break, if adapter cannot be found.
+                # This can happen when the target item is not the same type
+                # like the source item.
+                continue
             try:
                 setattr(adapter, name, value)
             except ValidationError as exc:
