@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from ..interfaces import IMultilingual
 from ..interfaces import LANGUAGE_INDEPENDENT_KEY
 from Acquisition import aq_base
@@ -31,7 +29,7 @@ def isLanguageIndependent(field):
 
 
 @implementer(IValue)
-class ValueBase(object):
+class ValueBase:
     def __init__(self, context, request, form, field, widget):
         self.context = context
         self.request = request
@@ -80,7 +78,7 @@ class AddingLanguageIndependentValue(ValueBase):
 
 
 class LanguageIndependentWidgetLabel(ValueBase):
-    msgid = u"${label} \u2022"
+    msgid = "${label} \u2022"
 
     def get(self):
         label = self.widget.label

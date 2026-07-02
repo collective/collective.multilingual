@@ -5,12 +5,20 @@ from .utils import logger
 from Acquisition import aq_base
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.defaultpage import check_default_page_via_view
-from Products.CMFPlone.defaultpage import get_default_page
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.globalrequest import getRequest
 from zope.lifecycleevent import modified
 from zope.schema.interfaces import ValidationError
+
+
+try:
+    # Plone >= 6
+    from plone.base.defaultpage import check_default_page_via_view
+    from plone.base.defaultpage import get_default_page
+except ImportError:
+    # Plone < 6
+    from Products.CMFPlone.defaultpage import check_default_page_via_view
+    from Products.CMFPlone.defaultpage import get_default_page
 
 
 def objectAddedEvent(context, event):
@@ -65,7 +73,9 @@ def objectAddedEvent(context, event):
     parent = result[0].getObject()
     if not is_copy and parent.creation_date >= context.creation_date:
         logger.warn(
-            "parent %r is newer than translation %r." % (uuid, str(IUUID(context)))
+            "parent {!r} is newer than translation {!r}.".format(
+                uuid, str(IUUID(context))
+            )
         )
 
     # If the item being copied or translated was a default page, apply
@@ -114,7 +124,19 @@ def objectModifiedEvent(context, event):
             continue
 
         for item in items:
-            adapter = field.interface(item)
+            if context.portal_type != item.portal_type:
+                logger.warn(
+                    """Target item (%s) is not the same type as the source
+                    item (%s). Translating the content might fail.""",
+                    item.portal_type,
+                    context.portal_type
+                )
+            adapter = field.interface(item, None)
+            if adapter is None:
+                # Do not break, if adapter cannot be found.
+                # This can happen when the target item is not the same type
+                # like the source item.
+                continue
             try:
                 setattr(adapter, name, value)
             except ValidationError as exc:

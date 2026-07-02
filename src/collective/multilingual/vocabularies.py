@@ -1,21 +1,17 @@
-import six
-from Acquisition import aq_base
-from plone import api
-from plone.dexterity.interfaces import (
-    IDexterityContainer,
-    IDexterityContent,
-    IDexterityFTI,
-)
-from plone.dexterity.utils import resolveDottedName
-from Products.CMFCore.utils import getToolByName
-from zope.component import getAllUtilitiesRegisteredFor, getSiteManager
-from zope.interface import implementer
-from zope.schema.interfaces import IVocabularyFactory
-from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
-
 from .i18n import MessageFactory as _
 from .interfaces import IMultilingual
 from .utils import logger
+from Acquisition import aq_base
+from plone import api
+from plone.dexterity.interfaces import IDexterityContainer
+from plone.dexterity.interfaces import IDexterityContent
+from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.utils import resolveDottedName
+from zope.component import getAllUtilitiesRegisteredFor
+from zope.interface import implementer
+from zope.schema.interfaces import IVocabularyFactory
+from zope.schema.vocabulary import SimpleTerm
+from zope.schema.vocabulary import SimpleVocabulary
 
 
 class DexterityContentVocabulary(SimpleVocabulary):
@@ -42,7 +38,7 @@ class DexterityContentVocabulary(SimpleVocabulary):
 
 
 @implementer(IVocabularyFactory)
-class Translations(object):
+class Translations:
     def __call__(self, context):
         terms = []
         portal = api.portal.get()
@@ -87,7 +83,7 @@ class Translations(object):
 
 
 @implementer(IVocabularyFactory)
-class FTIs(object):
+class FTIs:
     interface = IDexterityContent
 
     def __call__(self, context):
@@ -107,13 +103,11 @@ class ContainerFTIs(FTIs):
 
 
 @implementer(IVocabularyFactory)
-class Indexes(object):
+class Indexes:
     def __call__(self, context):
-        portal = api.portal.get()
         catalog = api.portal.get_tool("portal_catalog")
         terms = [
-            SimpleTerm(name, six.text_type(name), six.text_type(name))
-            for name in sorted(catalog.indexes())
+            SimpleTerm(name, str(name), str(name)) for name in sorted(catalog.indexes())
         ]
         return SimpleVocabulary(terms)
 

@@ -1,6 +1,6 @@
 from ..testing import FUNCTIONAL_TESTING
 
-import unittest2 as unittest
+import unittest
 
 
 class TestUtility(unittest.TestCase):
@@ -128,12 +128,11 @@ class TestUtility(unittest.TestCase):
         self.assertTrue("Create language folder" in browser.contents)
         form = browser.getForm(id="form")
 
-        # Test form defaults:
-        equals = lambda name, text: self.assertEqual(form.getControl(name).value, text)
-
-        equals("Title", "Spanish")
-        equals("Description", "This folder contains content in Spanish.")
-        equals("Content type", ["Container"])
+        self.assertEqual(form.getControl("Title"), "Spanish")
+        self.assertEqual(
+            form.getControl("Description"), "This folder contains content in Spanish."
+        )
+        self.assertEqual(form.getControl("Content type"), ["Container"])
 
         # Submit form.
         form.submit("Create")

@@ -28,10 +28,9 @@ next_url = field.Field(schema.ASCIILine(__name__="next_url"), mode="hidden")
 
 class IAdding(Interface):
     fti = schema.Choice(
-        title=_(u"Content type"),
+        title=_("Content type"),
         description=_(
-            u"Select the content type to create and use "
-            u"as the language root folder."
+            "Select the content type to create and use " "as the language root folder."
         ),
         required=True,
         vocabulary="collective.multilingual.vocabularies.ContainerFTIs",
@@ -46,15 +45,15 @@ class IClearTranslations(Interface):
 
 class ISelectTranslation(Interface):
     target = RelationChoice(
-        title=_(u"Item"),
-        description=_(u"Select the item that is a translation."),
+        title=_("Item"),
+        description=_("Select the item that is a translation."),
         required=True,
         vocabulary="plone.app.vocabularies.Catalog",
     )
 
 
 @implementer(IValue)
-class SetupFormDefaults(object):
+class SetupFormDefaults:
     def __init__(self, *args):
         self.get = lambda args=args: self.get_default(*args)
 
@@ -87,7 +86,7 @@ class SetupFormDefaults(object):
 
             if field is IBasic["description"]:
                 message = _(
-                    u"This folder contains content in ${lang_name}.",
+                    "This folder contains content in ${lang_name}.",
                     mapping={"lang_name": lang_name},
                 )
 
@@ -107,15 +106,15 @@ class SetupLanguageView(Form):
 
     ignoreContext = True
 
-    label = _(u"Create language folder")
+    label = _("Create language folder")
 
     @property
     def description(self):
         lang_id, lang_name = self.getLanguage()
         return _(
-            u"Submit this form to create a new folder for content "
-            u"in ${lang_name}. It will be added to "
-            u'your site root as "/${lang_id}".',
+            "Submit this form to create a new folder for content "
+            "in ${lang_name}. It will be added to "
+            'your site root as "/${lang_id}".',
             mapping={"lang_id": lang_id, "lang_name": lang_name},
         )
 
@@ -130,7 +129,7 @@ class SetupLanguageView(Form):
             lang_name = available_languages[lang_id]
         return lang_id, lang_name
 
-    @button.buttonAndHandler(_(u"Create"))
+    @button.buttonAndHandler(_("Create"))
     def handleCreate(self, action):
         data, errors = self.extractData()
         if errors:
@@ -166,7 +165,7 @@ class SetupLanguageView(Form):
 
         IStatusMessage(self.request).addStatusMessage(
             _(
-                u"${fti_name} created.",
+                "${fti_name} created.",
                 mapping={"fti_name": translate(fti.Title(), context=self.request)},
             ),
             "info",
@@ -176,12 +175,12 @@ class SetupLanguageView(Form):
 
 
 class SetTranslationForView(Form):
-    label = _(u"Select translation")
+    label = _("Select translation")
     description = _(
-        u"Locate an existing content item for which the current item "
-        u"is a translation. If the selected item already has been "
-        u"translated into the current language, the other reference "
-        u"will be removed."
+        "Locate an existing content item for which the current item "
+        "is a translation. If the selected item already has been "
+        "translated into the current language, the other reference "
+        "will be removed."
     )
 
     fields = field.Fields(ISelectTranslation)
@@ -190,7 +189,7 @@ class SetTranslationForView(Form):
     def getContent(self):
         return getToolByName(self.context, "portal_url").getPortalObject()
 
-    @button.buttonAndHandler(_(u"Use"))
+    @button.buttonAndHandler(_("Use"))
     def handleUse(self, action):
         data, errors = self.extractData()
         if errors:
@@ -207,12 +206,11 @@ class SetTranslationForView(Form):
 
         if language == obj_lang:
             lang_name = self.request.locale.displayNames.languages.get(
-                obj_lang, _(u"n/a")
+                obj_lang, _("n/a")
             )
 
             self.status = _(
-                u"The referenced content item is set to the "
-                u"same language: ${lang}.",
+                "The referenced content item is set to the " "same language: ${lang}.",
                 mapping={"lang": lang_name},
             )
 
@@ -230,7 +228,7 @@ class SetTranslationForView(Form):
                 title = item.Title().decode("utf-8")
                 IStatusMessage(self.request).addStatusMessage(
                     _(
-                        u'The existing reference to "${title}" has ' u"been replaced.",
+                        'The existing reference to "${title}" has ' "been replaced.",
                         mapping={"title": title},
                     ),
                     "info",
@@ -243,7 +241,7 @@ class SetTranslationForView(Form):
         modified(obj)
 
         IStatusMessage(self.request).addStatusMessage(
-            _(u"Translation registered."), "info"
+            _("Translation registered."), "info"
         )
 
         next_url = self.context.absolute_url()
@@ -251,14 +249,14 @@ class SetTranslationForView(Form):
 
 
 class ClearTranslationsView(Form):
-    label = _(u"Clear translations")
+    label = _("Clear translations")
     description = _(
-        u"Please confirm that you want to clear the translation " u"references."
+        "Please confirm that you want to clear the translation " "references."
     )
 
     fields = field.Fields(IClearTranslations)
 
-    @button.buttonAndHandler(_(u"Clear"))
+    @button.buttonAndHandler(_("Clear"))
     def handleClear(self, action):
         data, errors = self.extractData()
         if errors:
@@ -271,7 +269,7 @@ class ClearTranslationsView(Form):
         if parent is not None:
             modified(parent)
 
-        IStatusMessage(self.request).addStatusMessage(_(u"References cleared."), "info")
+        IStatusMessage(self.request).addStatusMessage(_("References cleared."), "info")
 
         next_url = self.context.absolute_url()
         self.request.response.redirect(next_url)

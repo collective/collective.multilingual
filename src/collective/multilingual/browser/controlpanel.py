@@ -1,6 +1,8 @@
-import collections
-import itertools
-
+from ..i18n import MessageFactory as _
+from ..interfaces import IMultilingual
+from ..interfaces import ISettings
+from ..utils import dottedName
+from ..utils import getPersistentTranslationCounter
 from Acquisition import ImplicitAcquisitionWrapper
 from plone.app.registry.browser import controlpanel
 from plone.dexterity.interfaces import IDexterityFTI
@@ -11,13 +13,15 @@ from Products.CMFCore.utils import getToolByName
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
 from zope import schema
-from zope.component import getSiteManager, getUtility
-from zope.interface import implementer, providedBy
+from zope.component import getSiteManager
+from zope.component import getUtility
+from zope.interface import implementer
+from zope.interface import providedBy
 from zope.lifecycleevent import modified
 
-from ..i18n import MessageFactory as _
-from ..interfaces import IMultilingual, ISettings
-from ..utils import dottedName, getPersistentTranslationCounter
+import collections
+import itertools
+
 
 _stat = collections.namedtuple("stat", ("language", "count", "ratio"))
 
@@ -42,8 +46,7 @@ class IControlPanelSchema(ISettings):
 
 
 @implementer(IControlPanelSchema)
-class ControlPanelAdapter(object):
-
+class ControlPanelAdapter:
     _behavior_name = dottedName(IMultilingual)
 
     context = None

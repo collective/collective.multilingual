@@ -1,18 +1,15 @@
-from .interfaces import IMultilingual
-from .interfaces import ITranslationGraph
-from .utils import getPersistentTranslationCounter
-from .utils import logger
+import functools
+
 from Acquisition import aq_base
 from plone.memoize.ram import store_in_cache
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-from six.moves import map
 from zope.component import adapter
 from zope.interface import implementer
 
-import functools
-
+from .interfaces import IMultilingual, ITranslationGraph
+from .utils import getPersistentTranslationCounter, logger
 
 marker = object()
 
@@ -56,7 +53,7 @@ def cache(func):
     return decorator
 
 
-class CacheProxy(object):
+class CacheProxy:
     __slots__ = "adapter", "key"
 
     def __init__(self, adapter, key):
@@ -76,7 +73,7 @@ class CacheProxy(object):
 
 @implementer(ITranslationGraph)
 @adapter(IMultilingual)
-class MultilingualTranslationGraph(object):
+class MultilingualTranslationGraph:
     def __init__(self, context):
         self.context = context
         self.catalog = getToolByName(context, "portal_catalog")
@@ -144,7 +141,7 @@ class MultilingualTranslationGraph(object):
         assert len(supported) > 1
 
         lang_items = []
-        langs = set(lang[0] for lang in supported)
+        langs = {lang[0] for lang in supported}
         default_lang = lt.getDefaultLanguage()
         distance = 0
 
@@ -275,6 +272,6 @@ class MultilingualTranslationGraph(object):
             logger.warn("This object is contained in multiple translation graphs!")
 
         obj = result[0].getObject()
-        obj.translations = obj.translations - set((self.uuid,))
+        obj.translations = list(set(obj.translations) - set((self.uuid,)))
         getPersistentTranslationCounter(self.context).change(1)
         return obj

@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-
+from .i18n import MessageFactory as _
 from plone.app.dexterity.behaviors.metadata import IDublinCore
 from plone.autoform import interfaces as autoform
 from plone.autoform.interfaces import IFormFieldProvider
@@ -9,10 +8,9 @@ from plone.supermodel.utils import mergedTaggedValueList
 from z3c.form.interfaces import IForm
 from zope import schema
 from zope.component import getUtility
-from zope.interface import Interface, provider
+from zope.interface import Interface
+from zope.interface import provider
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-
-from .i18n import MessageFactory as _
 
 
 def setLanguageIndependent(*fields):
@@ -31,10 +29,10 @@ def getLanguageIndependent(context):
     schemas = tuple(schemata) + (fti.lookupSchema(),)
 
     fields = set()
-    for schema in schemas:
-        entries = mergedTaggedValueList(schema, LANGUAGE_INDEPENDENT_KEY)
+    for schema_ in schemas:
+        entries = mergedTaggedValueList(schema_, LANGUAGE_INDEPENDENT_KEY)
         for interface, name, value in entries:
-            field = schema[name]
+            field = schema_[name]
             fields.add(field)
 
     return fields
@@ -102,7 +100,7 @@ class ISettings(Interface):
             "language will not be applied as a filter, "
             "even when the setting is enabled."
         ),
-        default=set(["UID", "id", "getId", "path", "translations"]),
+        default={"UID", "id", "getId", "path", "translations"},
         value_type=schema.Choice(
             vocabulary="collective.multilingual.vocabularies.Indexes",
         ),
