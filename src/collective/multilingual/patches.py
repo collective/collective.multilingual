@@ -46,7 +46,10 @@ def applyLanguageFilter(site, blacklist, request, kw):
     else:
         default = None
 
-    query[LANGUAGE_INDEX_NAME] = (language, default)
+    if default is None:
+        query[LANGUAGE_INDEX_NAME] = language
+    else:
+        query[LANGUAGE_INDEX_NAME] = (language, default)
 
     # XXX: For path queries that target a path under a language
     # folder, and if we want to support a list of (language-neutral)
